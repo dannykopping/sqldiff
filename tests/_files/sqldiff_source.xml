@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="sqldiff_source">
+	<table_structure name="user">
+		<field Field="userId" Type="int(10) unsigned" Null="NO" Key="PRI" Extra="auto_increment" />
+		<field Field="userName" Type="varchar(100)" Null="NO" Key="MUL" Extra="" />
+		<field Field="userEmail" Type="varchar(200)" Null="YES" Key="UNI" Extra="" />
+		<field Field="userDob" Type="date" Null="YES" Key="" Extra="" />
+		<field Field="userHomepage" Type="varchar(255)" Null="YES" Key="" Extra="" />
+		<key Table="user" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="userId" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" />
+		<key Table="user" Non_unique="0" Key_name="userEmail" Seq_in_index="1" Column_name="userEmail" Collation="A" Null="YES" Index_type="BTREE" Comment="" />
+		<key Table="user" Non_unique="1" Key_name="userName" Seq_in_index="1" Column_name="userName" Collation="A" Null="" Index_type="BTREE" Comment="" />
+		<options Name="user" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="0" Avg_row_length="0" Data_length="0" Max_data_length="281474976710655" Index_length="4096" Data_free="0" Auto_increment="1" Create_time="2010-11-24 16:24:04" Update_time="2010-11-24 16:24:04" Check_time="2010-11-24 16:24:04" Collation="utf8_general_ci" Create_options="" Comment="User table" />
+	</table_structure>
+</database>
+</mysqldump>

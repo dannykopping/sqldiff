@@ -1,0 +1,34 @@
+<project name="sqldiff" default="build" basedir=".">
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+    <mkdir dir="${basedir}/build/coverage" />
+    <mkdir dir="${basedir}/build/logs" />
+    <mkdir dir="${basedir}/build/docs" />
+  </target>
+
+  <target name="phpab">
+    <exec executable="phpab">
+      <arg line="-o ${basedir}/SqlDiff/Autoload.php 
+                 -t ${basedir}/SqlDiff/Autoload.php.in 
+                 --indent '        ' 
+                 ${basedir}/SqlDiff" />
+    </exec>
+  </target>
+
+  <target name="phpunit">
+    <exec executable="phpunit" failonerror="true" />
+  </target>
+  
+  <target name="phpdoc">
+    <exec executable="phpdoc">
+      <arg line="-d ${basedir}/SqlDiff 
+                 -t ${basedir}/build/docs
+                 -ti 'API docs for SqlDiff'
+                 -dc SqlDiff
+                 -dn SqlDiff_TextUI
+                 ${basedir}/SqlDiff" />
+    </exec>
+  </target>
+
+  <target name="build" depends="clean,phpab,phpunit,phpdoc"/>
+</project>
