@@ -2,14 +2,21 @@ SqlDiff
 =======
 Installation
 ------------
-Installation via PEAR will be available shortly. Unitil then you will have to fetch the code from github:
+SqlDiff should be installed using [PEAR](http://pear.php.net/).
 
-    christer@aurora:~$ git clone https://github.com/christeredvartsen/sqldiff.git
-    Initialized empty Git repository in /home/christer/sqldiff/.git/
-    remote: Counting objects: 47, done.
-    remote: Compressing objects: 100% (45/45), done.
-    remote: Total 47 (delta 23), reused 0 (delta 0)
-    Unpacking objects: 100% (47/47), done.
+The PEAR channel (`pear.starzinger.net`) that is used to distribute SqlDiff needs to be registered with the local PEAR environment.
+
+    christer@aurora:~$ sudo pear channel-discover pear.starzinger.net
+    Adding Channel "pear.starzinger.net" succeeded
+    Discovery of channel "pear.starzinger.net" succeeded
+
+This has to be done only once. Now, to install the package:
+
+    christer@aurora:~$ sudo pear install stz/SqlDiff-alpha
+    downloading SqlDiff-0.0.1.tgz ...
+    Starting to download SqlDiff-0.0.1.tgz (11,394 bytes)
+    .....done: 11,394 bytes
+    install ok: channel://pear.starzinger.net/SqlDiff-0.0.1
     
 Usage
 -----
@@ -18,7 +25,7 @@ Usage
     christer@aurora:~/sqldiff$ mysqldump -X -d -u <user> -p <target> > target.xml
     Enter password: 
     christer@aurora:~/sqldiff$ ./sqldiff.php source.xml target.xml 
-    SqlDiff-dev by Christer Edvartsen.
+    SqlDiff-0.0.1 by Christer Edvartsen.
 
     Run the following queries to add information to <target>:
     ================================================================================
