@@ -20,11 +20,11 @@ This has to be done only once. Now, to install the package:
     
 Usage
 -----
-    christer@aurora:~/sqldiff$ mysqldump -X -d -u <user> -p <source> > source.xml
+    christer@aurora:~$ mysqldump -X -d -u <user> -p <source> > source.xml
     Enter password: 
-    christer@aurora:~/sqldiff$ mysqldump -X -d -u <user> -p <target> > target.xml
+    christer@aurora:~$ mysqldump -X -d -u <user> -p <target> > target.xml
     Enter password: 
-    christer@aurora:~/sqldiff$ ./sqldiff.php source.xml target.xml 
+    christer@aurora:~$ sqldiff source.xml target.xml 
     SqlDiff-0.0.1 by Christer Edvartsen.
 
     Run the following queries to add information to <target>:
