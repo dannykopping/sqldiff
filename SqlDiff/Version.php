@@ -42,7 +42,7 @@ class SqlDiff_Version {
      *
      * @var string
      */
-    static protected $id = 'dev';
+    static protected $id = '@package_version@';
 
     /**
      * Get the version number only
@@ -50,6 +50,10 @@ class SqlDiff_Version {
      * @return string
      */
     static public function getVersionNumber() {
+        if (strpos(static::$id, '@package_version') === 0) {
+            return 'dev';
+        }
+
         return static::$id;
     }
 
