@@ -29,48 +29,70 @@
  */
 
 /**
- * Autoloader used by SqlDiff
+ * Formatter for the TextUI
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class SqlDiff_Autoload {
+class SqlDiff_TextUI_Formatter {
+    /**#@+
+     * Message type
+     *
+     * @var int
+     */
+    const ADD    = 1;
+    const CHANGE = 2;
+    const DELETE = 3;
+    /**#@-*/
+
     /**
-     * SqlDiff classes
+     * Colors for the different types
      *
      * @var array
      */
-    static public $classes = array(
-        'sqldiff_autoload' => '/Autoload.php',
-        'sqldiff_database' => '/Database.php',
-        'sqldiff_database_abstract' => '/Database/Abstract.php',
-        'sqldiff_database_mysql' => '/Database/Mysql.php',
-        'sqldiff_database_table_abstract' => '/Database/Table/Abstract.php',
-        'sqldiff_database_table_column_abstract' => '/Database/Table/Column/Abstract.php',
-        'sqldiff_database_table_column_mysql' => '/Database/Table/Column/Mysql.php',
-        'sqldiff_database_table_index_abstract' => '/Database/Table/Index/Abstract.php',
-        'sqldiff_database_table_index_mysql' => '/Database/Table/Index/Mysql.php',
-        'sqldiff_database_table_mysql' => '/Database/Table/Mysql.php',
-        'sqldiff_exception' => '/Exception.php',
-        'sqldiff_textui_command' => '/TextUI/Command.php',
-        'sqldiff_textui_formatter' => '/TextUI/Formatter.php',
-        'sqldiff_version' => '/Version.php'
+    protected $colors = array(
+        self::ADD    => 32, // Green
+        self::CHANGE => 33, // Yellow
+        self::DELETE => 31, // Red
     );
 
     /**
-     * Load a class
+     * Enabled flag
      *
-     * @param string $class The name of the class to load
+     * @var boolean
      */
-    static function load($class) {
-        $className = strtolower($class);
+    protected $enabled = false;
 
-        if (isset(static::$classes[$className])) {
-            require __DIR__ . static::$classes[$className];
+    /**
+     * Constructor
+     *
+     * @param boolean $enabled Wether or not to enable the color formatting
+     */
+    public function __construct($enabled) {
+        $this->enabled = $enabled;
+    }
+
+    /**
+     * Format a message
+     *
+     * @param string $message The message to format
+     * @param int $type One of the defined constants in this class
+     * @return string
+     */
+    public function format($message, $type) {
+        if (!$this->enabled) {
+            return $message;
+        }
+
+        switch ($type) {
+            case self::ADD:
+            case self::CHANGE:
+            case self::DELETE:
+                return "\033[" . $this->colors[$type] . 'm' . $message . "\033[0m";
+            default:
+                return $message;
         }
     }
 }
-
-spl_autoload_register('SqlDiff_Autoload::load');

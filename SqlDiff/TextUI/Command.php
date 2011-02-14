@@ -63,6 +63,7 @@ class SqlDiff_TextUI_Command {
         'database-type'  => null,
         'mirror'         => null,
         'only-sql'       => null,
+        'colors'         => null,
     );
 
     /**
@@ -74,7 +75,15 @@ class SqlDiff_TextUI_Command {
         'database-type' => SqlDiff_Database::MYSQL,
         'mirror'        => false,
         'only-sql'      => false,
+        'colors'        => false,
     );
+
+    /**
+     * Formatter used to output text to the terminal
+     *
+     * @var SqlDiff_TextUI_Formatter
+     */
+    protected $formatter = null;
 
     /**
      * Write a message
@@ -129,6 +138,9 @@ class SqlDiff_TextUI_Command {
                     case 'mirror':
                         $this->options['mirror'] = true;
                         break;
+                    case 'colors':
+                        $this->options['colors'] = true;
+                        break;
                     case 'only-sql':
                         $this->options['only-sql'] = true;
                         break;
@@ -153,6 +165,9 @@ class SqlDiff_TextUI_Command {
         // Fetch target and source (which should be the last two arguments)
         $this->target = array_pop($argv);
         $this->source = array_pop($argv);
+
+        // Create the formatter
+        $this->formatter = new SqlDiff_TextUI_Formatter($this->options['colors']);
 
         // See if the arguments points to a file
         foreach (array($this->source, $this->target) as $arg) {
@@ -227,23 +242,23 @@ class SqlDiff_TextUI_Command {
 
         foreach ($source->getTables() as $tableName => $sourceTable) {
             if (!$target->hasTable($sourceTable)) {
-                $queries[] = $sourceTable->getCreateTableSql();
+                $queries[] = $this->formatter->format($sourceTable->getCreateTableSql(), SqlDiff_TextUI_Formatter::ADD);
             } else if ($sourceTable->getCreateTableSql() !== $target->getTable($tableName)->getCreateTableSql()) {
                 $targetTable = $target->getTable($tableName);
 
                 foreach ($sourceTable->getColumns() as $columnName => $column) {
                     if (!$targetTable->hasColumn($column)) {
-                        $queries[] = $targetTable->getAddColumnSql($column);
+                        $queries[] = $this->formatter->format($targetTable->getAddColumnSql($column), SqlDiff_TextUI_Formatter::ADD);
                     } else if ((string) $column !== (string) $targetTable->getColumn($columnName)) {
-                        $queries[] = $targetTable->getChangeColumnSql($column);
+                        $queries[] = $this->formatter->format($targetTable->getChangeColumnSql($column), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
 
                 foreach ($sourceTable->getIndexes() as $indexName => $index) {
                     if (!$targetTable->hasIndex($index)) {
-                        $queries[] = $targetTable->getAddIndexSql($index);
+                        $queries[] = $this->formatter->format($targetTable->getAddIndexSql($index), SqlDiff_TextUI_Formatter::ADD);
                     } else if ((string) $index !== (string) $targetTable->getIndex($indexName)) {
-                        $queries[] = $targetTable->getChangeIndexSql($index);
+                        $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
             }
@@ -265,23 +280,23 @@ class SqlDiff_TextUI_Command {
 
         foreach ($target->getTables() as $tableName => $targetTable) {
             if (!$source->hasTable($targetTable)) {
-                $queries[] = $targetTable->getDropTableSql();
+                $queries[] = $this->formatter->format($targetTable->getDropTableSql(), SqlDiff_TextUI_Formatter::DELETE);
             } else if ($targetTable->getCreateTableSql() !== $source->getTable($tableName)->getCreateTableSql()) {
                 $sourceTable = $source->getTable($tableName);
 
                 foreach ($targetTable->getIndexes() as $indexName => $index) {
                     if (!$sourceTable->hasIndex($index)) {
-                        $queries[] = $targetTable->getDropIndexSql($index);
+                        $queries[] = $this->formatter->format($targetTable->getDropIndexSql($index), SqlDiff_TextUI_Formatter::DELETE);
                     } else if ((string) $index !== (string) $sourceTable->getIndex($indexName)) {
-                        $queries[] = $targetTable->getChangeIndexSql($index);
+                        $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
 
                 foreach ($targetTable->getColumns() as $columnName => $column) {
                     if (!$sourceTable->hasColumn($column)) {
-                        $queries[] = $targetTable->getDropColumnSql($column);
+                        $queries[] = $this->formatter->format($targetTable->getDropColumnSql($column), SqlDiff_TextUI_Formatter::DELETE);
                     } else if ((string) $column !== (string) $sourceTable->getColumn($columnName)) {
-                        $queries[] = $targetTable->getChangeColumnSql($column);
+                        $queries[] = $this->formatter->format($targetTable->getChangeColumnSql($column), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
             }
@@ -311,6 +326,8 @@ Options:
   --version              Print the version
   --version-number       Print the version number only
   --only-sql             Only display queries
+  --colors               Use colors in output to differentiate destructive
+                         queries from others.
   --mirror               Add SQL to drop tables, columns and indexes in the
                          <target> database that is not present in the <source>
   --database-type <type> The database type. The only supported database is
