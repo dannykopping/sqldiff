@@ -210,11 +210,11 @@ class SqlDiff_TextUI_Command {
         $queries = array();
         $prepend = 'Run the following queries to add information to <target>:';
 
-        $queries = $this->getCreateQueries($source, $target);
+        $queries = $this->getDiffQueries($source, $target);
 
         if ($this->options['mirror']) {
             $prepend = 'Run the following queries to make <target> the same as <source>:';
-            $queries = array_merge($queries, $this->getDropQueries($target, $source));
+            $queries = array_merge($queries, $this->getMirrorQueries($target, $source));
         }
 
         if (!empty($queries)) {
@@ -237,7 +237,14 @@ class SqlDiff_TextUI_Command {
         exit(0);
     }
 
-    protected function getCreateQueries($source, $target) {
+    /**
+     * Method to return the queries needed to update <target> to be like the <source> database
+     *
+     * @param SqlDiff_Database_Abstract $source The source database
+     * @param SqlDiff_Database_Abstract $target The target database
+     * @return array Returns an array of formatted queries
+     */
+    protected function getDiffQueries($source, $target) {
         $queries = array();
 
         foreach ($source->getTables() as $tableName => $sourceTable) {
@@ -273,9 +280,9 @@ class SqlDiff_TextUI_Command {
      *
      * @param SqlDiff_Database_Abstract $target The target database
      * @param SqlDiff_Database_Abstract $source The source database
-     * @return array Returns an array of queries
+     * @return array An array of formatted queries
      */
-    protected function getDropQueries($target, $source) {
+    protected function getMirrorQueries($target, $source) {
         $queries = array();
 
         foreach ($target->getTables() as $tableName => $targetTable) {
@@ -287,16 +294,12 @@ class SqlDiff_TextUI_Command {
                 foreach ($targetTable->getIndexes() as $indexName => $index) {
                     if (!$sourceTable->hasIndex($index)) {
                         $queries[] = $this->formatter->format($targetTable->getDropIndexSql($index), SqlDiff_TextUI_Formatter::DELETE);
-                    } else if ((string) $index !== (string) $sourceTable->getIndex($indexName)) {
-                        $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
 
                 foreach ($targetTable->getColumns() as $columnName => $column) {
                     if (!$sourceTable->hasColumn($column)) {
                         $queries[] = $this->formatter->format($targetTable->getDropColumnSql($column), SqlDiff_TextUI_Formatter::DELETE);
-                    } else if ((string) $column !== (string) $sourceTable->getColumn($columnName)) {
-                        $queries[] = $this->formatter->format($targetTable->getChangeColumnSql($column), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
             }
