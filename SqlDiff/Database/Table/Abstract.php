@@ -73,6 +73,20 @@ abstract class SqlDiff_Database_Table_Abstract {
     protected $indexes = array();
 
     /**
+     * Counter used for column positions
+     *
+     * @var int
+     */
+    protected $position = 0;
+
+    /**
+     * Array holding positions for the different columns
+     *
+     * @var array
+     */
+    protected $columnPositions = array();
+
+    /**
      * Set the database object
      *
      * @param SqlDiff_Database_Abstract $database
@@ -161,9 +175,42 @@ abstract class SqlDiff_Database_Table_Abstract {
      */
     public function addColumn(SqlDiff_Database_Table_Column_Abstract $column) {
         $column->setTable($this);
-        $this->columns[$column->getName()] = $column;
+        $colName = $column->getName();
+        $this->columns[$colName] = $column;
+        $this->columnPositions[$this->position++] = $colName;
 
         return $this;
+    }
+
+    /**
+     * Get a column based on a position
+     *
+     * @param int $position The position to fetch (0-based index)
+     * @return SqlDiff_Database_Table_Column_Abstract|null
+     */
+    public function getColumnByPosition($position) {
+        if (!isset($this->columnPositions[$position]) || !isset($this->columns[$this->columnPositions[$position]])) {
+            return null;
+        }
+
+        return $this->columns[$this->columnPositions[$position]];
+    }
+
+    /**
+     * Get the position of the column (0-based index)
+     *
+     * @param string|SqlDiff_Database_Table_Column_Abstract $column Either a column name or a
+     *                                                              column object
+     * @return int|null
+     */
+    public function getColumnPosition($column) {
+        if ($column instanceof SqlDiff_Database_Table_Column_Abstract) {
+            $column = $column->getName();
+        }
+
+        $pos = array_search($column, $this->columnPositions);
+
+        return $pos !== false ? $pos : null;
     }
 
     /**
@@ -184,7 +231,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Remove a column
      *
      * @param string|SqlDiff_Database_Table_Column_Abstract $column Either a column name or a
-     *                                                                  column object
+     *                                                              column object
      * @return SqlDiff_Database_Table_Abstract
      */
     public function removeColumn($column) {
@@ -192,7 +239,13 @@ abstract class SqlDiff_Database_Table_Abstract {
             $column = $column->getName();
         }
 
+        // Remove the column
         unset($this->columns[$column]);
+
+        // Find the position, remove it, and fix the rest of the array
+        $position = array_search($column, $this->columnPositions);
+        array_splice($this->columnPositions, $position, 1);
+        $this->position--;
 
         return $this;
     }

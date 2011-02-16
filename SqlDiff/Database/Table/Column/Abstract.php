@@ -261,6 +261,48 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
     }
 
     /**
+     * Get the position of this column in the current table
+     *
+     * @return int
+     */
+    public function getPosition() {
+        return $this->getTable()->getColumnPosition($this);
+    }
+
+    /**
+     * Get the previous column (if it exists)
+     *
+     * @return SqlDiff_Database_Table_Column_Abstract|null
+     */
+    public function getPreviousColumn() {
+        $curPos = $this->getTable()->getColumnPosition($this);
+
+        // If this is the first column, return null
+        if (!$curPos) {
+            return null;
+        }
+
+        return $this->getTable()->getColumnByPosition($curPos - 1);
+    }
+
+    /**
+     * Get the next column (if it exists)
+     *
+     * @return SqlDiff_Database_Table_Column_Abstract|null
+     */
+    public function getNextColumn() {
+        $curPos  = $this->getTable()->getColumnPosition($this);
+        $numCols = $this->getTable()->getNumColumns();
+
+        // If this is the first column, return null
+        if ($curPos < ($numCols - 1)) {
+            return $this->getTable()->getColumnByPosition($curPos + 1);
+        }
+
+        return null;
+    }
+
+    /**
      * The magic to string method is a proxy to the implemention of getDefinition
      *
      * @return string

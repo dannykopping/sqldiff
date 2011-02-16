@@ -307,7 +307,37 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * @return string
      */
     public function getAddColumnSql(SqlDiff_Database_Table_Column_Abstract $column) {
-        return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $column);
+        $definition = (string) $column;
+
+        // If the column has AUTO INCREMENT, we need to append PRIMARY KEY to the statement for it
+        // to be a valid MySQL statement
+        if ($column->getAutoIncrement()) {
+            $definition .= ' PRIMARY KEY';
+            $indexes = $column->getTable()->getIndexes();
+
+            // Remove the PRIMARY KEY index from the table since it will be added in this statement
+            foreach ($indexes as $index) {
+                if ($index->getType() === 'PRIMARY KEY') {
+                    $column->getTable()->removeIndex($index);
+                    break;
+                }
+            }
+        }
+
+        // If the column position is not at the end of the table it should be inserted at the
+        // correct position
+        $prev = $column->getPreviousColumn();
+        $position = '';
+
+        if ($prev) {
+            // If there is a column before this one, add "AFTER <name>"
+            $position = sprintf(' AFTER `%s`', $prev->getName());
+        } else if ($column->getPosition() === 0) {
+            // If this column is first in the table, add "FIRST"
+            $position = ' FIRST';
+        }
+
+        return sprintf('ALTER TABLE `%s` ADD %s%s;', $this->getName(), $definition, $position);
     }
 
     /**
