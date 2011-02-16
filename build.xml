@@ -4,6 +4,7 @@
     <mkdir dir="${basedir}/build/coverage" />
     <mkdir dir="${basedir}/build/logs" />
     <mkdir dir="${basedir}/build/docs" />
+    <mkdir dir="${basedir}/build/code-browser" />
   </target>
 
   <target name="phpab">
@@ -29,6 +30,20 @@
                  ${basedir}/SqlDiff" />
     </exec>
   </target>
+  
+  <target name="phploc">
+    <exec executable="phploc">
+      <arg line="--log-csv ${basedir}/build/logs/phploc.csv ${basedir}/SqlDiff" />
+    </exec>
+  </target>
+    
+  <target name="phpcb">
+    <exec executable="phpcb">
+      <arg line="--log ${basedir}/build/logs
+                 --source ${basedir}/SqlDiff
+                 --output ${basedir}/build/code-browser" />
+    </exec>
+  </target>
 
-  <target name="build" depends="clean,phpab,phpunit,phpdoc"/>
+  <target name="build" depends="clean,phpab,phpunit,phpdoc,phploc,phpcb"/>
 </project>
