@@ -16,14 +16,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>cogo@starzinger.net</email>
   <active>yes</active>
  </lead>
- <date>2011-02-13</date>
+ <date>2011-02-16</date>
  <version>
-  <release>0.0.1</release>
-  <api>0.0.1</api>
+  <release>0.0.2</release>
+  <api>0.0.2</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/mit-license">MIT License</license>
  <notes>http://github.com/christeredvartsen/sqldiff/blob/master/README.markdown</notes>
@@ -48,6 +48,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dir>
     <dir name="TextUI">
      <file baseinstalldir="/" name="Command.php" role="php" />
+     <file baseinstalldir="/" name="Formatter.php" role="php" />
     </dir>
     <file baseinstalldir="/" name="Autoload.php" role="php" />
     <file baseinstalldir="/" name="Database.php" role="php" />

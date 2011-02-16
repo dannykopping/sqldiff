@@ -329,8 +329,8 @@ Options:
   --version              Print the version
   --version-number       Print the version number only
   --only-sql             Only display queries
-  --colors               Use colors in output to differentiate destructive
-                         queries from others.
+  --colors               Use colors in output to differentiate the generated
+                         statements
   --mirror               Add SQL to drop tables, columns and indexes in the
                          <target> database that is not present in the <source>
   --database-type <type> The database type. The only supported database is
