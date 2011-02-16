@@ -26,6 +26,7 @@
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/sqldiff
  */
 
 /**
@@ -35,6 +36,7 @@
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/sqldiff
  */
 class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_Abstract {
     /**
