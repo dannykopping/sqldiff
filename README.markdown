@@ -37,4 +37,6 @@ Then, to generate the statements needed to upgrade <target> to <source>:
     ALTER TABLE `user` CHANGE `email` `email` varchar(255);
     ================================================================================
 
-Use the `--colors` option to enable colors in the output. Constructive statements are colored green, destructive red, and statements that change content are colored yellow.    
+Use the `--colors` option to enable colors in the output. Constructive statements are colored green, destructive red, and statements that change content are colored yellow.
+
+![Screenshot](https://github.com/christeredvartsen/sqldiff/raw/master/screenshots/sqldiff-colors.png "Output when using the --colors option")    
