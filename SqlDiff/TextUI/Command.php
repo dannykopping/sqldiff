@@ -167,7 +167,11 @@ class SqlDiff_TextUI_Command {
         $this->source = array_pop($argv);
 
         // Create the formatter
-        $this->formatter = new SqlDiff_TextUI_Formatter($this->options['colors']);
+        $this->formatter = new SqlDiff_TextUI_Formatter();
+
+        if ($this->options['colors']) {
+            $this->formatter->enable();
+        }
 
         // See if the arguments points to a file
         foreach (array($this->source, $this->target) as $arg) {

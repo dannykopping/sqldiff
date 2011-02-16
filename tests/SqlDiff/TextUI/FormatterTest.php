@@ -29,92 +29,56 @@
  */
 
 /**
- * Formatter for the TextUI
- *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class SqlDiff_TextUI_Formatter {
-    /**#@+
-     * Message type
+class SqlDiff_TextUI_FormatterTest extends PHPUnit_Framework_TestCase {
+    /**
+     * Formatter instance
      *
-     * @var int
+     * @var SqlDiff_TextUI_Formatter
      */
-    const ADD    = 1;
-    const CHANGE = 2;
-    const DELETE = 3;
-    /**#@-*/
+    protected $formatter = null;
 
     /**
-     * Colors for the different types
-     *
-     * @var array
+     * Setup method
      */
-    protected $colors = array(
-        self::ADD    => 32, // Green
-        self::CHANGE => 33, // Yellow
-        self::DELETE => 31, // Red
-    );
-
-    /**
-     * Enabled flag
-     *
-     * @var boolean
-     */
-    protected $enabled = false;
-
-    /**
-     * Disable the formatter
-     *
-     * @return SqlDiff_TextUI_Formatter
-     */
-    public function disable() {
-        $this->enabled = false;
-
-        return $this;
+    public function setUp() {
+        $this->formatter = new SqlDiff_TextUI_Formatter();
     }
 
     /**
-     * Enable the formatter
-     *
-     * @return SqlDiff_TextUI_Formatter
+     * Teardown method
      */
-    public function enable() {
-        $this->enabled = true;
-
-        return $this;
+    public function tearDown() {
+        $this->formatter = null;
     }
 
-    /**
-     * Wether or not the formatter is enabled
-     *
-     * @return boolean
-     */
-    public function isEnabled() {
-        return $this->enabled;
+    public function testEnableFormatter() {
+        $this->formatter->enable();
+        $this->assertTrue($this->formatter->isEnabled());
     }
 
-    /**
-     * Format a message
-     *
-     * @param string $message The message to format
-     * @param int $type One of the defined constants in this class
-     * @return string
-     */
-    public function format($message, $type) {
-        if (!$this->enabled) {
-            return $message;
-        }
+    public function testDisableFormatter() {
+        $this->formatter->disable();
+        $this->assertFalse($this->formatter->isEnabled());
+    }
 
-        switch ($type) {
-            case self::ADD:
-            case self::CHANGE:
-            case self::DELETE:
-                return "\033[" . $this->colors[$type] . 'm' . $message . "\033[0m";
-            default:
-                return $message;
-        }
+    public function testFormatMessageWhenFormatterIsDisabled() {
+        $this->formatter->disable();
+        $message = 'My message';
+        $this->assertSame($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::DELETE));
+    }
+
+    public function testFormatMessageWhenFormatterIsEnabled() {
+        $this->formatter->enable();
+        $message = 'My message';
+
+        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::ADD));
+        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::CHANGE));
+        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::DELETE));
+        $this->assertSame($message, $this->formatter->format($message, 'unknown type'));
     }
 }
