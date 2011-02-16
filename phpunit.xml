@@ -22,9 +22,11 @@
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">PHP</directory>
+            <directory suffix=".php">SqlDiff</directory>
             <exclude>
                 <file>SqlDiff/Autoload.php</file>
+                <file>SqlDiff/Exception.php</file>
+                <file>SqlDiff/Version.php</file>
             </exclude>
         </whitelist>
     </filter>
