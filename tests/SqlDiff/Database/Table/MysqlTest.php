@@ -196,13 +196,41 @@ UNIQUE KEY `email` (`email`)
     public function testGetAddColumnSql() {
         $this->table->setName('tableName');
 
-        $col = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getDefinition'));
-        $col->expects($this->once())->method('getDefinition')->will($this->returnValue('`name` VARCHAR (100) NOT NULL'));
+        $col1 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getDefinition'));
+        $col1->setName('name');
+        $col1->expects($this->any())->method('getDefinition')->will($this->returnValue('`name` VARCHAR (100) NOT NULL'));
 
-        $sql = $this->table->getAddColumnSql($col);
-        $expectedSql = "ALTER TABLE `tableName` ADD `name` VARCHAR (100) NOT NULL;";
+        $col2 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getDefinition', 'getPreviousColumn'));
+        $col2->setName('password');
+        $col2->expects($this->any())->method('getDefinition')->will($this->returnValue('`password` VARCHAR (32) NOT NULL'));
+        $col2->expects($this->any())->method('getPreviousColumn')->will($this->returnValue($col1));
 
-        $this->assertSame($expectedSql, $sql);
+        $this->table->addColumns(array($col1, $col2));
+
+        $this->assertSame("ALTER TABLE `tableName` ADD `name` VARCHAR (100) NOT NULL FIRST;", $this->table->getAddColumnSql($col1));
+        $this->assertSame("ALTER TABLE `tableName` ADD `password` VARCHAR (32) NOT NULL AFTER `name`;", $this->table->getAddColumnSql($col2));
+    }
+
+    public function testGetAddColumnSqlWhenColumnIsAutoIncrement() {
+        $sourceTable = $this->getMock('SqlDiff_Database_Table_Mysql', array('getIndexes'));
+
+        // Add an index and a column to the source
+        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getType'));
+        $index->expects($this->any())->method('getType')->will($this->returnValue(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY));
+
+        $col = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
+        $col->setAutoIncrement(true);
+        $col->setTable($sourceTable);
+        $col->expects($this->any())->method('getName')->will($this->returnValue('id'));
+        $col->expects($this->any())->method('getDefinition')->will($this->returnValue('`id` int(11) NOT NULL AUTO_INCREMENT'));
+
+        $sourceTable->expects($this->once())->method('getIndexes')->will($this->returnValue(array($index)));
+
+        $this->table->setName('target');
+        $this->assertSame(
+            'ALTER TABLE `target` ADD `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY;',
+            $this->table->getAddColumnSql($col)
+        );
     }
 
     /**

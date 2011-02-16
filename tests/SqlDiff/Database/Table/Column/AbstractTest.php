@@ -142,4 +142,38 @@ class SqlDiff_Database_Table_Column_AbstractTest extends PHPUnit_Framework_TestC
         // Cast to string to make sure the getDefinition method is called once
         (string) $this->col;
     }
+
+    public function testGetPreviousColumn() {
+        $table = $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract');
+
+        $col1 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col1->setName('col1');
+        $col2 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col2->setName('col2');
+        $col3 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col3->setName('col3');
+
+        $table->addColumns(array($col1, $col2, $col3));
+
+        $this->assertNull($col1->getPreviousColumn());
+        $this->assertSame($col1, $col2->getPreviousColumn());
+        $this->assertSame($col2, $col3->getPreviousColumn());
+    }
+
+    public function testGetNextColumn() {
+        $table = $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract');
+
+        $col1 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col1->setName('col1');
+        $col2 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col2->setName('col2');
+        $col3 = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
+        $col3->setName('col3');
+
+        $table->addColumns(array($col1, $col2, $col3));
+
+        $this->assertSame($col2, $col1->getNextColumn());
+        $this->assertSame($col3, $col2->getNextColumn());
+        $this->assertNull($col3->getNextColumn());
+    }
 }

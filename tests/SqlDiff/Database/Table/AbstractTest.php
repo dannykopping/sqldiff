@@ -89,7 +89,7 @@ class SqlDiff_Database_Table_AbstractTest extends PHPUnit_Framework_TestCase {
      */
     public function testGetNumColumns() {
         $this->assertSame(0, $this->table->getNumColumns());
-        $col = $this->getMock('SqlDiff_Database_Table_Column_Abstract');
+        $col = $this->getMockForAbstractClass('SqlDiff_Database_Table_Column_Abstract');
         $this->table->addColumn($col);
         $this->assertSame(1, $this->table->getNumColumns());
     }
@@ -99,7 +99,7 @@ class SqlDiff_Database_Table_AbstractTest extends PHPUnit_Framework_TestCase {
      */
     public function testGetNumIndexes() {
         $this->assertSame(0, $this->table->getNumIndexes());
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Abstract');
+        $index = $this->getMockForAbstractClass('SqlDiff_Database_Table_Index_Abstract');
         $this->table->addIndex($index);
         $this->assertSame(1, $this->table->getNumIndexes());
     }
@@ -230,5 +230,62 @@ class SqlDiff_Database_Table_AbstractTest extends PHPUnit_Framework_TestCase {
 
         $this->table->addIndexes($indexes);
         $this->assertSame(2, count($this->table->getIndexes()));
+    }
+
+    public function testGetColumnByPosition() {
+        $col1 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col1->expects($this->any())->method('getName')->will($this->returnValue('1'));
+
+        $col2 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col2->expects($this->any())->method('getName')->will($this->returnValue('2'));
+
+        $col3 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col3->expects($this->any())->method('getName')->will($this->returnValue('3'));
+
+        $col4 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col4->expects($this->any())->method('getName')->will($this->returnValue('4'));
+
+        $this->table->addColumns(array($col1, $col2, $col3, $col4));
+        $this->assertSame($col1, $this->table->getColumnByPosition(0));
+        $this->assertSame($col2, $this->table->getColumnByPosition(1));
+        $this->assertSame($col3, $this->table->getColumnByPosition(2));
+        $this->assertSame($col4, $this->table->getColumnByPosition(3));
+
+        $this->table->removeColumn($col2);
+        $this->assertSame($col3, $this->table->getColumnByPosition(1));
+        $this->assertSame($col4, $this->table->getColumnByPosition(2));
+    }
+
+    public function testGetColumnPosition() {
+        $col1 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col1->expects($this->any())->method('getName')->will($this->returnValue('1'));
+
+        $col2 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col2->expects($this->any())->method('getName')->will($this->returnValue('2'));
+
+        $col3 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col3->expects($this->any())->method('getName')->will($this->returnValue('3'));
+
+        $col4 = $this->getMock('SqlDiff_Database_Table_Column_Mysql');
+        $col4->expects($this->any())->method('getName')->will($this->returnValue('4'));
+
+        $this->table->addColumns(array($col1, $col2, $col3, $col4));
+        $this->assertSame(0, $this->table->getColumnPosition($col1));
+        $this->assertSame(1, $this->table->getColumnPosition($col2));
+        $this->assertSame(2, $this->table->getColumnPosition($col3));
+        $this->assertSame(3, $this->table->getColumnPosition($col4));
+
+        $this->table->removeColumn($col2);
+        $this->assertSame(0, $this->table->getColumnPosition($col1));
+        $this->assertSame(1, $this->table->getColumnPosition($col3));
+        $this->assertSame(2, $this->table->getColumnPosition($col4));
+    }
+
+    public function testGetColumnByUnexistingPosition() {
+        $this->assertNull($this->table->getColumnByPosition(100));
+    }
+
+    public function testGetColumnPositionWithUnexistingColumn() {
+        $this->assertNull($this->table->getColumnPosition('foobar'));
     }
 }
