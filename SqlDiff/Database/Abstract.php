@@ -158,7 +158,9 @@ abstract class SqlDiff_Database_Abstract {
      * If anything goes wrong, throw an SqlDiff_Exception
      *
      * @param string $filePath Path to the dump file
+     * @param array $filter Array with 'include' and 'exclude' keys that both are arrays of tables
+     *                      to include/exclude
      * @throws SqlDiff_Exception
      */
-    abstract public function parseDump($filePath);
+    abstract public function parseDump($filePath, array $filter);
 }

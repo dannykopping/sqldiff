@@ -54,6 +54,16 @@ class SqlDiff_TextUI_Command {
     protected $target = null;
 
     /**
+     * Filter tables
+     *
+     * @var array
+     */
+    protected $filter = array(
+        'include' => array(),
+        'exclude' => array(),
+    );
+
+    /**
      * Valid options
      *
      * @var array
@@ -66,6 +76,8 @@ class SqlDiff_TextUI_Command {
         'mirror'         => null,
         'only-sql'       => null,
         'colors'         => null,
+        'include'        => null,
+        'exclude'        => null,
     );
 
     /**
@@ -78,6 +90,8 @@ class SqlDiff_TextUI_Command {
         'mirror'        => false,
         'only-sql'      => false,
         'colors'        => false,
+        'include'       => null,
+        'exclude'       => null,
     );
 
     /**
@@ -158,6 +172,15 @@ class SqlDiff_TextUI_Command {
                         }
 
                         $this->options[$arg] = $argv[$i];
+                        break;
+                    case 'include':
+                    case 'exclude':
+                        if (!isset($argv[++$i])) {
+                            throw new SqlDiff_Exception('--' . $arg . ' missing argument');
+                        }
+
+                        $this->filter[$arg] = array_flip(explode(',', $argv[$i]));
+                        break;
                     default:
                         throw new SqlDiff_Exception('Unknown option: --' . $arg);
                 }
@@ -192,8 +215,8 @@ class SqlDiff_TextUI_Command {
      */
     protected function getDatabaseObject($type, $filePath) {
         // Create a new database
-        $database = SqlDiff_Database::factory($type);
-        $database->parseDump($filePath);
+        $database = SqlDiff_Database::factory($type, $this->filter);
+        $database->parseDump($filePath, $this->filter);
 
         return $database;
     }
@@ -329,17 +352,32 @@ Usage: sqldiff [options] <source> <target>
     MySQL:
       XML generated with mysqldump (with the -X or --xml option)
 
+  Filtering:
+    The --include and --exclude options can be used to filter which tables you
+    want to diff. --include works as a whitelist, and --exclude works as a
+    blacklist.
+
 Options:
 
-  --help                 Print this information
-  --version              Print the version
-  --version-number       Print the version number only
+  --database-type <type> The database type. The only supported database is
+                         MySQL (which is the default)
   --only-sql             Only display queries
-  --colors               Use colors in output to differentiate the generated
-                         statements
   --mirror               Add SQL to drop tables, columns and indexes in the
                          <target> database that is not present in the <source>
-  --database-type <type> The database type. The only supported database is
-                         MySQL (which is the default)';
+                         database
+
+  --colors               Use colors in output to differentiate the  generated
+                         statements
+
+  --include <name(s)>    Comma separated list of tables to include. If used
+                         alone all other tables will be excluded. Can be
+                         combined with the --exclude option
+  --exclude <name(s)>    Comma separated list of tables to exclude. If used
+                         alone all other tables will be included. Can be
+                         combined with the --include option
+
+  --version              Print the version
+  --version-number       Print the version number only
+  --help                 Print this information';
     }
 }

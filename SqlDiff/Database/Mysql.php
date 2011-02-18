@@ -43,13 +43,22 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
      * Populate the database related metadata
      *
      * @param SimpleXMLElement $xml The root element of the dump file
-     * @return void
+     * @param array $filter Filter to use when including/excluding tables
      */
-    public function populateDatabase(SimpleXMLElement $xml) {
+    public function populateDatabase(SimpleXMLElement $xml, array $filter) {
         // Set name of the database
         $this->setName((string) $xml->database['name']);
 
         foreach ($xml->database->table_structure as $tableXmlNode) {
+            $tableName = (string) $tableXmlNode['name'];
+
+            if (
+                (!empty($filter['include']) && !isset($filter['include'][$tableName])) ||
+                (!empty($filter['exclude']) && isset($filter['exclude'][$tableName]))
+            ) {
+                continue;
+            }
+
             $table = $this->createTable($tableXmlNode);
             $this->addTable($table);
         }
@@ -157,9 +166,11 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
      * Parse a dump file
      *
      * @param string $filePath Path to the dump file
+     * @param array $filter Array with 'include' and 'exclude' keys that both are arrays of tables
+     *                      to include/exclude
      * @throws SqlDiff_Exception
      */
-    public function parseDump($filePath) {
+    public function parseDump($filePath, array $filter) {
         // Clear the error buffer and Suppress errors
         libxml_clear_errors();
         libxml_use_internal_errors(true);
@@ -175,6 +186,6 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
         }
 
         // Add tables, fields and keys to this instance
-        $this->populateDatabase($xml);
+        $this->populateDatabase($xml, $filter);
     }
 }

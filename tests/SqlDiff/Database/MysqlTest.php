@@ -63,7 +63,7 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
      */
     public function testParseCompleteDump() {
         $path = SQLDIFF_FILES . '/compound_key.xml';
-        $this->database->parseDump($path);
+        $this->database->parseDump($path, array('include' => array(), 'exclude' => array()));
 
         $this->assertSame('test', $this->database->getName());
         $this->assertSame(1, $this->database->getNumTables());
@@ -99,7 +99,7 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
      * @expectedException SqlDiff_Exception
      */
     public function testParseDumpWithInvalidXmlFile() {
-        $this->database->parseDump(__FILE__);
+        $this->database->parseDump(__FILE__, array('include' => array(), 'exclude' => array()));
     }
 
     /**
@@ -107,7 +107,7 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
      */
     public function testParseDumpWithInvalidNamespace() {
         $path = SQLDIFF_FILES . '/missing_namespace.xml';
-        $this->database->parseDump($path);
+        $this->database->parseDump($path, array('include' => array(), 'exclude' => array()));
     }
 
     /**
