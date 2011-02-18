@@ -102,8 +102,10 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
               ->setType((string) $xml['Type'])
               ->setKey((string) $xml['key'])
               ->setNotNull(((string) $xml['Null'] === 'NO'))
-              ->setAutoIncrement(((string) $xml['Extra'] === 'auto_increment'))
-              ->setDefault((!empty($xml['Default']) ? (string) $xml['Default'] : null));
+              ->setAutoIncrement(((string) $xml['Extra'] === 'auto_increment'));
+
+        $default = (string) $xml['Default'];
+        $field->setDefault($default !== '' ? $default : null);
 
         return $field;
     }

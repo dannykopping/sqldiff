@@ -109,4 +109,15 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
         $path = SQLDIFF_FILES . '/missing_namespace.xml';
         $this->database->parseDump($path);
     }
+
+    /**
+     * Missing default values
+     * If a field has a default value of '0' it is not included in the generated statement.
+     * https://github.com/christeredvartsen/sqldiff/issues/2
+     */
+    public function testIssue2() {
+        $xml = simplexml_load_string('<field Field="age" Type="int(11)" Null="NO" Key="" Default="0" Extra="" />');
+        $field = $this->database->createTableField($xml);
+        $this->assertSame('0', $field->getDefault());
+    }
 }

@@ -1,6 +1,10 @@
 Changelog for SqlDiff
 =====================
 
+SqlDiff-0.0.3
+-------------
+* Fixed Issue #2: Missing default values
+
 SqlDiff-0.0.2
 -------------
 * Fixed Issue #1: Position of columns in generated statements
