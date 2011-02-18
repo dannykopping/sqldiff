@@ -122,11 +122,7 @@ class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_
         $default = $this->getDefault();
 
         if ($default !== null) {
-            if (!is_numeric($default)) {
-                $default = "'" . $default . "'";
-            }
-
-            $sql .= ' DEFAULT ' . $default;
+            $sql .= ' DEFAULT \'' . $default . '\'';
         }
 
         if ($this->getAutoIncrement()) {
