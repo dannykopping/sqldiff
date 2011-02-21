@@ -54,6 +54,13 @@ abstract class SqlDiff_Database_Abstract {
     protected $name = null;
 
     /**
+     * The originating command object
+     *
+     * @var SqlDiff_TextUI_Command
+     */
+    protected $command = null;
+
+    /**
      * Set the name of the database
      *
      * @param string $name
@@ -72,6 +79,27 @@ abstract class SqlDiff_Database_Abstract {
      */
     public function getName() {
         return $this->name;
+    }
+
+    /**
+     * Set the current command
+     *
+     * @param SqlDiff_TextUI_Command $command
+     * @return SqlDiff_Database_Abstract
+     */
+    public function setCommand(SqlDiff_TextUI_Command $command) {
+        $this->command = $command;
+
+        return $this;
+    }
+
+    /**
+     * Get the command
+     *
+     * @return SqlDiff_TextUI_Command
+     */
+    public function getCommand() {
+        return $this->command;
     }
 
     /**
