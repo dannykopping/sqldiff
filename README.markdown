@@ -13,10 +13,10 @@ The PEAR channel (`pear.starzinger.net`) that is used to distribute SqlDiff need
 This has to be done only once. Now, to install the package:
 
     christer@aurora:~$ sudo pear install stz/SqlDiff-beta
-    downloading SqlDiff-0.0.2.tgz ...
-    Starting to download SqlDiff-0.0.2.tgz (13,038 bytes)
-    .....done: 13,038 bytes
-    install ok: channel://pear.starzinger.net/SqlDiff-0.0.2
+    downloading SqlDiff-0.0.3.tgz ...
+    Starting to download SqlDiff-0.0.3.tgz (14,020 bytes)
+    .....done: 14,020 bytes
+    install ok: channel://pear.starzinger.net/SqlDiff-0.0.3
     
 Usage
 -----
@@ -28,7 +28,7 @@ First you will have to generate the schemas you want to diff:
 Then, to generate the statements needed to upgrade <target> to <source>:    
      
     christer@aurora:~$ sqldiff source.xml target.xml 
-    SqlDiff-0.0.2 by Christer Edvartsen.
+    SqlDiff-0.0.3 by Christer Edvartsen.
 
     Run the following statements to add information to <target>:
     ================================================================================

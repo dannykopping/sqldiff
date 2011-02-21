@@ -3,7 +3,7 @@ Changelog for SqlDiff
 
 SqlDiff-0.0.3
 -------------
-__N/A__
+__2011-02-21__
 
 * Fixed Issue #4: Missing statement to change table engine  
 * Fixed Issue #3: Table options are not registered 
