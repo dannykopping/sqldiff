@@ -383,4 +383,25 @@ Options:
   --version-number       Print the version number only
   --help                 Print this information';
     }
+
+    /**
+     * Set the formatter
+     *
+     * @param SqlDiff_TextUI_Formatter $formatter
+     * @return SqlDiff_TextUI_Command
+     */
+    public function setFormatter(SqlDiff_TextUI_Formatter $formatter) {
+        $this->formatter = $formatter;
+
+        return $this;
+    }
+
+    /**
+     * Get the formatter
+     *
+     * @return SqlDiff_TextUI_Formatter
+     */
+    public function getFormatter() {
+        return $this->formatter;
+    }
 }

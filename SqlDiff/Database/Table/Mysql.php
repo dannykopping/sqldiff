@@ -406,10 +406,11 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      */
     public function getExtraQueries(SqlDiff_Database_Table_Abstract $table) {
         $queries = array();
+        $formatter = $this->getDatabase()->getCommand()->getFormatter();
 
         // See if the engines are the same
         if ($this->getEngine() !== $table->getEngine()) {
-            $queries[] = "ALTER TABLE `" . $this->getName() . "` ENGINE = " . $table->getEngine();
+            $queries[] = $formatter->format("ALTER TABLE `" . $this->getName() . "` ENGINE = " . $table->getEngine(), SqlDiff_TextUI_Formatter::CHANGE);
         }
 
         return $queries;

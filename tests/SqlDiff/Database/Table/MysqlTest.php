@@ -342,7 +342,16 @@ UNIQUE KEY `email` (`email`)
      * Try to get extra queries specific to MySQL
      */
     public function testGetExtraQueries() {
-        $this->table->setEngine('InnoDB')->setName('user');
+        $formatter = $this->getMock('SqlDiff_TextUI_Formatter', array('format'));
+        $formatter->expects($this->once())->method('format')->will($this->returnArgument(0));
+
+        $command = $this->getMock('SqlDiff_TextUI_Command', array('getFormatter'));
+        $command->expects($this->once())->method('getFormatter')->will($this->returnValue($formatter));
+
+        $db = $this->getMock('SqlDiff_Database_Mysql', array('getCommand'));
+        $db->expects($this->once())->method('getCommand')->will($this->returnValue($command));
+
+        $this->table->setEngine('InnoDB')->setName('user')->setDatabase($db);
         $target = $this->getMock('SqlDiff_Database_Table_Mysql', array('getEngine'));
         $target->expects($this->exactly(2))->method('getEngine')->will($this->returnValue('MyISAM'));
 
