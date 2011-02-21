@@ -74,10 +74,10 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
         $table = new SqlDiff_Database_Table_Mysql();
 
         $table->setName((string) $xml['name'])
-              ->setEngine((string) $xml->options->Engine)
-              ->setAutoIncrement((int) (string) $xml->options->Auto_increment)
-              ->setCollation((string) $xml->options->Collation)
-              ->setComment((string) $xml->options->Comment);
+              ->setEngine((string) $xml->options['Engine'])
+              ->setAutoIncrement((int) (string) $xml->options['Auto_increment'])
+              ->setCollation((string) $xml->options['Collation'])
+              ->setComment((string) $xml->options['Comment']);
 
         // Manage all fields in this table
         foreach ($xml->field as $fieldXmlNode) {

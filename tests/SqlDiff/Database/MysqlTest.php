@@ -125,7 +125,7 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
      * Test the include/exclude funtionality
      */
     public function testPopulateDatabaseUsingFilters() {
-        $xml = simplexml_load_file(__DIR__ . '/../../_files/filter_test.xml');
+        $xml = simplexml_load_file(SQLDIFF_FILES . '/filter_test.xml');
         $db = clone $this->database;
         $db->populateDatabase($xml, array('include' => array(), 'exclude' => array()));
         $this->assertSame(4, $db->getNumTables(), 'Expected 4 tables, got ' . $db->getNumTables());
@@ -137,5 +137,21 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
         $db = clone $this->database;
         $db->populateDatabase($xml, array('include' => array(), 'exclude' => array('a' => true)));
         $this->assertSame(3, $db->getNumTables(), 'Expected 3 tables, got ' . $db->getNumTables());
+    }
+
+    /**
+     * Table options are not registered
+     * The table options (auto_increment value, table engine and so forth) are not registered when
+     * parsing the xml.
+     * https://github.com/christeredvartsen/sqldiff/issues/3
+     */
+    public function testIssue3() {
+        $this->database->parseDump(SQLDIFF_FILES . '/sqldiff_source.xml');
+        $table = $this->database->getTable('user');
+
+        $this->assertSame('MyISAM', $table->getEngine());
+        $this->assertSame(1, $table->getAutoIncrement());
+        $this->assertSame('utf8_general_ci', $table->getCollation());
+        $this->assertSame('User table', $table->getComment());
     }
 }
