@@ -39,4 +39,12 @@ Then, to generate the statements needed to upgrade <target> to <source>:
 
 Use the `--colors` option to enable colors in the output. Constructive statements are colored green, destructive red, and statements that change content are colored yellow.
 
-![Screenshot](https://github.com/christeredvartsen/sqldiff/raw/master/screenshots/sqldiff-colors.png "Output when using the --colors option")    
+![Screenshot](https://github.com/christeredvartsen/sqldiff/raw/master/screenshots/sqldiff-colors.png "Output when using the --colors option")
+
+To include or exclude tables from the generated statements use the `--include` or `--exclude` options respectively. When `--include` is used only the tables specified will be included, and when `--exclude` is used all other tables than the ones listed will be included. Tables are specified as a comma separated list:
+
+    christer@aurora:~$ sqldiff --include table1,table2 source.xml target.xml
+    
+or
+ 
+    christer@aurora:~$ sqldiff --exclude table1,table2 source.xml target.xml    
