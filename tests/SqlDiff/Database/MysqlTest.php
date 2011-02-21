@@ -120,4 +120,22 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
         $field = $this->database->createTableField($xml);
         $this->assertSame('0', $field->getDefault());
     }
+
+    /**
+     * Test the include/exclude funtionality
+     */
+    public function testPopulateDatabaseUsingFilters() {
+        $xml = simplexml_load_file(__DIR__ . '/../../_files/filter_test.xml');
+        $db = clone $this->database;
+        $db->populateDatabase($xml, array('include' => array(), 'exclude' => array()));
+        $this->assertSame(4, $db->getNumTables(), 'Expected 4 tables, got ' . $db->getNumTables());
+
+        $db = clone $this->database;
+        $db->populateDatabase($xml, array('include' => array('a' => true), 'exclude' => array()));
+        $this->assertSame(1, $db->getNumTables(), 'Expected 1 table, got ' . $db->getNumTables());
+
+        $db = clone $this->database;
+        $db->populateDatabase($xml, array('include' => array(), 'exclude' => array('a' => true)));
+        $this->assertSame(3, $db->getNumTables(), 'Expected 3 tables, got ' . $db->getNumTables());
+    }
 }
