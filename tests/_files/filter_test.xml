@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="filter_test">
+    <table_structure name="a" />
+    <table_structure name="b" />
+    <table_structure name="c" />
+    <table_structure name="d" />
+</database>
+</mysqldump>
