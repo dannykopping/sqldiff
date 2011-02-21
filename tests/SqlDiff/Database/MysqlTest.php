@@ -146,7 +146,7 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
      * https://github.com/christeredvartsen/sqldiff/issues/3
      */
     public function testIssue3() {
-        $this->database->parseDump(SQLDIFF_FILES . '/sqldiff_source.xml');
+        $this->database->parseDump(SQLDIFF_FILES . '/sqldiff_source.xml', array('include' => array(), 'exclude' => array()));
         $table = $this->database->getTable('user');
 
         $this->assertSame('MyISAM', $table->getEngine());
