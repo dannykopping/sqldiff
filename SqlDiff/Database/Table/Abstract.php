@@ -380,6 +380,17 @@ abstract class SqlDiff_Database_Table_Abstract {
     }
 
     /**
+     * Method that can be implemented by child classes to generate extra database-specific queries
+     *
+     * @param SqlDiff_Database_Table_Abstract $table
+     * @return array Returns an array of pre-formatted queries
+     * @codeCoverageIgnore
+     */
+    public function getExtraQueries(SqlDiff_Database_Table_Abstract $table) {
+        return array();
+    }
+
+    /**
      * Syntax for creating a table
      *
      * @return string

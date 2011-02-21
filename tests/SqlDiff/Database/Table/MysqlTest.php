@@ -337,4 +337,15 @@ UNIQUE KEY `email` (`email`)
         $sql = $this->table->getDropTableSql();
         $this->assertSame(sprintf('DROP TABLE `%s`', $name), $sql);
     }
+
+    /**
+     * Try to get extra queries specific to MySQL
+     */
+    public function testGetExtraQueries() {
+        $this->table->setEngine('InnoDB')->setName('user');
+        $target = $this->getMock('SqlDiff_Database_Table_Mysql', array('getEngine'));
+        $target->expects($this->exactly(2))->method('getEngine')->will($this->returnValue('MyISAM'));
+
+        $this->assertSame(array('ALTER TABLE `user` ENGINE = MyISAM'), $this->table->getExtraQueries($target));
+    }
 }

@@ -143,4 +143,10 @@ class SqlDiff_Database_AbstractTest extends PHPUnit_Framework_TestCase {
         $tables = $this->db->getTables();
         $this->assertInternalType('array', $tables);
     }
+
+    public function testSetGetCommand() {
+        $command = $this->getMock('SqlDiff_TextUI_Command');
+        $this->db->setCommand($command);
+        $this->assertSame($command, $this->db->getCommand());
+    }
 }

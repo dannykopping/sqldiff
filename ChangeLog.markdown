@@ -3,6 +3,7 @@ Changelog for SqlDiff
 
 SqlDiff-0.0.3
 -------------
+* Fixed Issue #4: Missing statement to change table engine  
 * Fixed Issue #3: Table options are not registered 
 * Fixed Issue #2: Missing default values
 * Added support for filtering using the --include and --exclude options

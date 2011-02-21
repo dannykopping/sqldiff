@@ -397,4 +397,21 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
 
         return sprintf('ALTER TABLE `%s` DROP %s;', $this->getName(), $name);
     }
+
+    /**
+     * Method that can be implemented by child classes to generate extra database-specific queries
+     *
+     * @param SqlDiff_Database_Table_Abstract $table
+     * @return array Returns an array of pre-formatted queries
+     */
+    public function getExtraQueries(SqlDiff_Database_Table_Abstract $table) {
+        $queries = array();
+
+        // See if the engines are the same
+        if ($this->getEngine() !== $table->getEngine()) {
+            $queries[] = "ALTER TABLE `" . $this->getName() . "` ENGINE = " . $table->getEngine();
+        }
+
+        return $queries;
+    }
 }

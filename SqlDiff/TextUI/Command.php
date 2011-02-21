@@ -216,7 +216,8 @@ class SqlDiff_TextUI_Command {
     protected function getDatabaseObject($type, $filePath) {
         // Create a new database
         $database = SqlDiff_Database::factory($type, $this->filter);
-        $database->parseDump($filePath, $this->filter);
+        $database->setCommand($this)
+                 ->parseDump($filePath, $this->filter);
 
         return $database;
     }
@@ -297,6 +298,8 @@ class SqlDiff_TextUI_Command {
                         $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), SqlDiff_TextUI_Formatter::CHANGE);
                     }
                 }
+
+                $queries = array_merge($queries, $targetTable->getExtraQueries($sourceTable));
             }
         }
 
