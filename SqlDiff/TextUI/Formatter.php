@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\TextUI;
+
 /**
  * Formatter for the TextUI
  *
@@ -38,7 +40,7 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_TextUI_Formatter {
+class Formatter {
     /**#@+
      * Message type
      *
@@ -70,7 +72,7 @@ class SqlDiff_TextUI_Formatter {
     /**
      * Disable the formatter
      *
-     * @return SqlDiff_TextUI_Formatter
+     * @return SqlDiff\TextUI\Formatter
      */
     public function disable() {
         $this->enabled = false;
@@ -81,7 +83,7 @@ class SqlDiff_TextUI_Formatter {
     /**
      * Enable the formatter
      *
-     * @return SqlDiff_TextUI_Formatter
+     * @return SqlDiff\TextUI\Formatter
      */
     public function enable() {
         $this->enabled = true;

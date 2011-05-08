@@ -30,7 +30,7 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-/** @see SqlDiff_Autoload */
-require 'SqlDiff/Autoload.php';
+/** @see SqlDiff\Autoload */
+require 'SqlDiff\Autoload.php';
 
-SqlDiff_TextUI_Command::main();
+SqlDiff\TextUI\Command::main();

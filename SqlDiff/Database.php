@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,7 +40,7 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database {
+class Database {
     /**#@+
      * Databases supported
      *
@@ -60,7 +62,7 @@ class SqlDiff_Database {
         $type = ucfirst(strtolower($type));
 
         // Generate class name
-        $className = 'SqlDiff_Database_' . $type;
+        $className = 'SqlDiff\\Database\\' . $type;
 
         // Return new object
         return new $className($type);

@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
 /**
  * Autoloader used by SqlDiff
  *
@@ -38,7 +40,7 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Autoload {
+class Autoload {
     /**
      * SqlDiff classes
      *
@@ -62,4 +64,4 @@ class SqlDiff_Autoload {
     }
 }
 
-spl_autoload_register('SqlDiff_Autoload::load');
+spl_autoload_register('SqlDiff\\Autoload::load');

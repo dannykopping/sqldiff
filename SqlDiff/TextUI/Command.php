@@ -29,6 +29,11 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\TextUI;
+
+use SqlDiff\Database;
+use SqlDiff\Version;
+
 /**
  * Main command class
  *
@@ -38,7 +43,7 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_TextUI_Command {
+class Command {
     /**
      * Source file path
      *
@@ -86,7 +91,7 @@ class SqlDiff_TextUI_Command {
      * @var array
      */
     protected $defaults = array(
-        'database-type' => SqlDiff_Database::MYSQL,
+        'database-type' => Database::MYSQL,
         'mirror'        => false,
         'only-sql'      => false,
         'colors'        => false,
@@ -97,7 +102,7 @@ class SqlDiff_TextUI_Command {
     /**
      * Formatter used to output text to the terminal
      *
-     * @var SqlDiff_TextUI_Formatter
+     * @var SqlDiff\TextUI\Formatter
      */
     protected $formatter = null;
 
@@ -120,7 +125,7 @@ class SqlDiff_TextUI_Command {
      * The main method called from the sqldiff script
      */
     static public function main() {
-        set_exception_handler('SqlDiff_Exception::handle');
+        set_exception_handler('SqlDiff\\Exception::handle');
 
         $argv = $_SERVER['argv'];
         array_shift($argv);
@@ -136,7 +141,7 @@ class SqlDiff_TextUI_Command {
      *
      * @param array $argv The arguments from the command line
      * @param boolean $exit Set this to false if you don't want the script to be killed
-     * @throws SqlDiff_Exception
+     * @throws SqlDiff\Exception
      */
     public function validateArguments(array $argv = array()) {
         $argc = count($argv);
@@ -163,9 +168,9 @@ class SqlDiff_TextUI_Command {
                     case 'help':
                         $this->writeMessage($this->getHelp(), true);
                     case 'version':
-                        $this->writeMessage(SqlDiff_Version::getVersionString(), true);
+                        $this->writeMessage(Version::getVersionString(), true);
                     case 'version-number':
-                        $this->writeMessage(SqlDiff_Version::getVersionNumber(), true);
+                        $this->writeMessage(Version::getVersionNumber(), true);
                     case 'database-type':
                         if (!isset($argv[++$i])) {
                             throw new SqlDiff_Exception('--database-type missing argument');

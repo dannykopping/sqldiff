@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,15 +40,15 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Exception extends Exception {
+class Exception extends \Exception {
     /**
      * Handle an exception
      *
-     * @param Exception $exception
+     * @param \Exception $exception
      */
     static public function handle($exception) {
         $output = array(
-            SqlDiff_Version::getVersionString(),
+            Version::getVersionString(),
             $exception->getMessage(),
             'See sqldiff --help for more information',
         );
