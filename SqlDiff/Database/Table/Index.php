@@ -29,6 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table;
+
+use SqlDiff\Database\TableInterface;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,39 +42,39 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-abstract class SqlDiff_Database_Table_Index_Abstract {
+abstract class Index {
     /**
      * The table this index belongs to
      *
-     * @var SqlDiff_Database_Table_Abstract
+     * @var SqlDiff\Database\TableInterface 
      */
-    protected $table = null;
+    private $table;
 
     /**
      * The name of the index
      *
      * @var string
      */
-    protected $name = null;
+    private $name;
 
     /**
      * The type of the index
      *
      * @var string
      */
-    protected $type = null;
+    private $type;
 
     /**
      * The fields this index is composed of
      *
-     * @var array An array of SqlDiff_Database_Table_Column_Abstract objects
+     * @var array An array of SqlDiff\Database\Table\ColumnInterface objects
      */
-    protected $fields = array();
+    private $fields = array();
 
     /**
      * Get the table attribute
      *
-     * @return SqlDiff_Database_Table_Abstract
+     * @return SqlDiff\Database\TableInterface 
      */
     public function getTable() {
         return $this->table;
@@ -79,10 +83,10 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
     /**
      * Set the table attribute
      *
-     * @param SqlDiff_Database_Table_Abstract $table
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @param SqlDiff\Database\TableInterface $table
+     * @return SqlDiff\Database\Table\Index 
      */
-    public function setTable(SqlDiff_Database_Table_Abstract $table) {
+    public function setTable(TableInterface $table) {
         $this->table = $table;
 
         return $this;
@@ -101,7 +105,7 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
      * Set the name attribute
      *
      * @param string $name
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @return SqlDiff\Database\Table\Index 
      */
     public function setName($name) {
         $this->name = $name;
@@ -122,7 +126,7 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
      * Set the type attribute
      *
      * @param string $type
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @return SqlDiff\Database\Table\Index 
      */
     public function setType($type) {
         $this->type = $type;
@@ -143,7 +147,7 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
      * Set the fields attribute
      *
      * @param string $fields
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @return SqlDiff\Database\Table\Index 
      */
     public function setFields(array $fields) {
         $this->fields = $fields;
@@ -154,10 +158,10 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
     /**
      * Add a single field
      *
-     * @param SqlDiff_Database_Table_Column_Abstract $field
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @param SqlDiff\Database\Table\ColumnInterface $field
+     * @return SqlDiff\Database\Table\Index 
      */
-    public function addField(SqlDiff_Database_Table_Column_Abstract $field) {
+    public function addField(ColumnInterface $field) {
         $this->fields[] = $field;
 
         return $this;
@@ -166,8 +170,8 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
     /**
      * Add several fields
      *
-     * @param array $fields Array of SqlDiff_Database_Table_Column_Abstract objects
-     * @return SqlDiff_Database_Table_Index_Abstract
+     * @param array $fields Array of SqlDiff\Database\Table\ColumnInterface objects
+     * @return SqlDiff\Database\Table\Index 
      */
     public function addFields(array $fields) {
         foreach ($fields as $field) {
@@ -185,11 +189,4 @@ abstract class SqlDiff_Database_Table_Index_Abstract {
     public function __toString() {
         return $this->getDefinition();
     }
-
-    /**
-     * Get the definition of this index
-     *
-     * @return string
-     */
-    abstract public function getDefinition();
 }
