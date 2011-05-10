@@ -384,15 +384,4 @@ abstract class Table {
 
         return isset($this->indexes[$index]);
     }
-
-    /**
-     * Method that can be implemented by child classes to generate extra database-specific queries
-     *
-     * @param SqlDiff\Database\TableInterface $table
-     * @return array Returns an array of pre-formatted queries
-     * @codeCoverageIgnore
-     */
-    public function getExtraQueries(TableInterface $table) {
-        return array();
-    }
 }

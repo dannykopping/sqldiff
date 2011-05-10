@@ -96,4 +96,12 @@ interface TableInterface {
      * @return string
      */
     function getDropIndexSql(IndexInterface $index);
+
+    /**
+     * Get remaning implementation specific queries
+     *
+     * @param SqlDiff\Database\TableInterface $table
+     * @return array Returns an array of pre-formatted queries
+     */
+    function getExtraQueries(TableInterface $table);
 }

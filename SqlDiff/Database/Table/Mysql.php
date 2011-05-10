@@ -29,6 +29,11 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table;
+
+use SqlDiff\Database\Table;
+use SqlDiff\Database\TableInterface;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,55 +43,55 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
+class Mysql extends Table implements TableInterface {
     /**
      * Table engine
      *
      * @var string
      */
-    protected $engine = null;
+    private $engine;
 
     /**
      * Auto increment start value
      *
      * @var int
      */
-    protected $autoIncrement = null;
+    private $autoIncrement;
 
     /**
      * Default charset
      *
      * @var string
      */
-    protected $defaultCharset = null;
+    private $defaultCharset;
 
     /**
      * Collation
      *
      * @var string
      */
-    protected $collation = null;
+    private $collation;
 
     /**
      * Checksum option
      *
      * @var boolean
      */
-    protected $checksum = null;
+    private $checksum;
 
     /**
      * Delay key write option
      *
      * @var boolean
      */
-    protected $delayKeyWrite = null;
+    private $delayKeyWrite;
 
     /**
      * Fixed row format option
      *
      * @var boolean
      */
-    protected $fixedRowFormat = null;
+    private $fixedRowFormat;
 
     /**
      * Get the engine
@@ -100,7 +105,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
     /**
      * Set the engine
      *
-     * @return SqlDiff_Table
+     * @return SqlDiff\Database\Table\Mysql 
      */
     public function setEngine($engine) {
         $this->engine = $engine;
@@ -121,7 +126,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set the auto increment value
      *
      * @param int $autoIncrement
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setAutoIncrement($autoIncrement) {
         $this->autoIncrement = $autoIncrement;
@@ -142,7 +147,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set default charset of table
      *
      * @param string $defaultCharset
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setDefaultCharset($defaultCharset) {
         $this->defaultCharset = $defaultCharset;
@@ -163,7 +168,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set table collation
      *
      * @param string $collation
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setCollation($collation) {
         $this->collation = $collation;
@@ -184,7 +189,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set the checksum option
      *
      * @param boolean $flag
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setChecksum($flag) {
         $this->checksum = (bool) $flag;
@@ -205,7 +210,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set the delay key write option
      *
      * @param boolean $flag
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setDelayKeyWrite($flag) {
         $this->delayKeyWrite = (bool) $flag;
@@ -226,7 +231,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
      * Set the fixed row format option
      *
      * @param boolean $flag
-     * @return SqlDiff_Database_Table_Mysql
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setFixedRowFormat($flag) {
         $this->fixedRowFormat = (bool) $flag;
@@ -235,18 +240,14 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
     }
 
     /**
-     * Get DROP TABLE syntax
-     *
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getDropTableSql()
      */
     public function getDropTableSql() {
         return sprintf('DROP TABLE `%s`', $this->getName());
     }
 
     /**
-     * Get CREATE TABLE syntax
-     *
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getCreateTableSql()
      */
     public function getCreateTableSql() {
         $fields = array();
@@ -303,10 +304,7 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
     }
 
     /**
-     * Syntax for adding a column to the table
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getAddColumnSql()
      */
     public function getAddColumnSql(SqlDiff_Database_Table_Column_Abstract $column) {
         $definition = (string) $column;
@@ -343,50 +341,35 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
     }
 
     /**
-     * Syntax for changing a column
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getChangeColumnSql()
      */
     public function getChangeColumnSql(SqlDiff_Database_Table_Column_Abstract $column) {
         return sprintf('ALTER TABLE `%s` CHANGE `%s` %s;', $this->getName(), $column->getName(), $column);
     }
 
     /**
-     * Syntax for dropping a column
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getDropColumnSql()
      */
     public function getDropColumnSql(SqlDiff_Database_Table_Column_Abstract $column) {
         return sprintf('ALTER TABLE `%s` DROP `%s`;', $this->getName(), $column->getName());
     }
 
     /**
-     * Syntax for adding an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getAddIndexSql()
      */
     public function getAddIndexSql(SqlDiff_Database_Table_Index_Abstract $index) {
         return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $index);
     }
 
     /**
-     * Syntax for changing an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getChangeIndexSql()
      */
     public function getChangeIndexSql(SqlDiff_Database_Table_Index_Abstract $index) {
         return sprintf('ALTER TABLE `%s` DROP INDEX `%s`, ADD %s;', $this->getName(), $index->getName(), $index);
     }
 
     /**
-     * Syntax for dropping an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getDropIndexSql()
      */
     public function getDropIndexSql(SqlDiff_Database_Table_Index_Abstract $index) {
         if ($index->getType() === SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY) {
@@ -399,12 +382,9 @@ class SqlDiff_Database_Table_Mysql extends SqlDiff_Database_Table_Abstract {
     }
 
     /**
-     * Method that can be implemented by child classes to generate extra database-specific queries
-     *
-     * @param SqlDiff_Database_Table_Abstract $table
-     * @return array Returns an array of pre-formatted queries
+     * @see SqlDiff\Database\TableInterface::getExtraQueries()
      */
-    public function getExtraQueries(SqlDiff_Database_Table_Abstract $table) {
+    public function getExtraQueries(TableInterface $table) {
         $queries = array();
         $formatter = $this->getDatabase()->getCommand()->getFormatter();
 
