@@ -29,6 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table;
+
+use SqlDiff\Database\TableInterface;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,69 +42,70 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-abstract class SqlDiff_Database_Table_Column_Abstract {
+abstract class Column {
     /**
      * The table object this column belongs to
      *
-     * @var SqlDiff_Database_Table_Abstract
+     * @var SqlDiff\Database\TableInterface 
      */
-    protected $table = null;
+    private $table;
 
     /**
      * Type of column (CHAR, INT, ...)
      *
      * @var string
      */
-    protected $type = null;
+    private $type;
 
     /**
      * >ttributes to the column
      *
      * @var string
      */
-    protected $attribute = null;
+    private $attribute;
 
     /**
      * Name of the column
      *
      * @var string
      */
-    protected $name = null;
+    private $name;
 
     /**
      * Wether or not the column can be null
      *
      * @var boolean
      */
-    protected $notNull = null;
+    private $notNull;
 
     /**
      * Default value
      *
      * @var string
      */
-    protected $default = null;
+    private $default;
 
     /**
      * Wether or not the field is an auto increment
      *
      * @var boolean
      */
-    protected $autoIncrement = null;
+    private $autoIncrement;
 
     /**
      * The column key
      *
      * @var string
      */
-    protected $key = null;
+    private $key;
 
     /**
      * Set the table object
      *
-     * @param SqlDiff_Database_Table_Abstract $table
+     * @param SqlDiff\Database\TableInterface $table
+     * @return SqlDiff\Database\Table\Column
      */
-    public function setTable(SqlDiff_Database_Table_Abstract $table) {
+    public function setTable(TableInterface $table) {
         $this->table = $table;
 
         return $this;
@@ -109,7 +114,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
     /**
      * Get the table object
      *
-     * @return SqlDiff_Database_Table_Abstract
+     * @return SqlDiff\Database\TableInterface
      */
     public function getTable() {
         return $this->table;
@@ -119,7 +124,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the type
      *
      * @param string $type
-     * @return SqlDiff_Database_Table_Column_Abstract
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setType($type) {
         $this->type = $type;
@@ -140,7 +145,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the attribute
      *
      * @param string $attribute
-     * @return SqlDiff_Database_Table_Column_Abstract
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setAttribute($attribute) {
         $this->attribute = $attribute;
@@ -170,7 +175,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the not null flag
      *
      * @param boolean $flag
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setNotNull($flag) {
         $this->notNull = (bool) $flag;
@@ -191,7 +196,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the default value
      *
      * @param string $default
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setDefault($default) {
         $this->default = $default;
@@ -212,7 +217,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the auto increment flag
      *
      * @param boolean $flag
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setAutoIncrement($flag) {
         $this->autoIncrement = (bool) $flag;
@@ -233,7 +238,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the column name
      *
      * @param string $name
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setName($name) {
         $this->name = $name;
@@ -254,7 +259,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
      * Set the key
      *
      * @param string $key
-     * @return SqlDiff_Database_Table_Column_Abstract
+     * @return SqlDiff\Database\Table\Column 
      */
     public function setKey($key) {
         $this->key = $key;
@@ -274,7 +279,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
     /**
      * Get the previous column (if it exists)
      *
-     * @return SqlDiff_Database_Table_Column_Abstract|null
+     * @return SqlDiff\Database\Table\ColumnInterface|null
      */
     public function getPreviousColumn() {
         $curPos = $this->getTable()->getColumnPosition($this);
@@ -290,7 +295,7 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
     /**
      * Get the next column (if it exists)
      *
-     * @return SqlDiff_Database_Table_Column_Abstract|null
+     * @return SqlDiff\Database\Table\ColumnInterface|null
      */
     public function getNextColumn() {
         $curPos  = $this->getTable()->getColumnPosition($this);
@@ -312,11 +317,4 @@ abstract class SqlDiff_Database_Table_Column_Abstract {
     public function __toString() {
         return $this->getDefinition();
     }
-
-    /**
-     * Get the definition of the column
-     *
-     * @return string
-     */
-    abstract public function getDefinition();
 }
