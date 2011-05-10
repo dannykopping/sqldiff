@@ -34,6 +34,15 @@ namespace SqlDiff\Database;
 use SqlDiff\Database\Table\ColumnInterface;
 use SqlDiff\Database\Table\IndexInterface;
  
+/**
+ * Database table interface 
+ *
+ * @package SqlDiff
+ * @author Christer Edvartsen <cogo@starzinger.net>
+ * @copyright Copyright (c) 2011, Christer Edvartsen
+ * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/sqldiff
+ */
 interface TableInterface {
     /**
      * Syntax for creating a table
