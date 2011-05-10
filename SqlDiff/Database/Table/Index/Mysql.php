@@ -29,7 +29,7 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database\Table\Column;
+namespace SqlDiff\Database\Table\Index;
 
 use SqlDiff\Exception;
 
