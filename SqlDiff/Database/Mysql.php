@@ -47,7 +47,7 @@ use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Mysql extends Database implements DatabaseInterface
+class Mysql extends Database implements DatabaseInterface {
     /**
      * Populate the database related metadata
      *
