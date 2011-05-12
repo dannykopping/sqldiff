@@ -20,13 +20,9 @@
     <exec executable="phpunit" failonerror="true" />
   </target>
   
-  <target name="phpdoc">
-    <exec executable="phpdoc">
-      <arg line="-d ${basedir}/SqlDiff 
-                 -t ${basedir}/build/docs
-                 -ti 'API docs for SqlDiff'
-                 -dc SqlDiff
-                 -dn SqlDiff_TextUI" />
+  <target name="docs">
+    <exec executable="docblox">
+      <arg line="run -d ${basedir}/SqlDiff -t ${basedir}/build/docs" />
     </exec>
   </target>
   
@@ -44,5 +40,5 @@
     </exec>
   </target>
 
-  <target name="build" depends="clean,phpab,phpunit,phpdoc,phploc,phpcb"/>
+  <target name="build" depends="clean,phpab,phpunit,docs,phploc,phpcb"/>
 </project>
