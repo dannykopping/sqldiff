@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\TextUI;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,19 +38,19 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_TextUI_FormatterTest extends PHPUnit_Framework_TestCase {
+class FormatterTest extends \PHPUnit_Framework_TestCase {
     /**
      * Formatter instance
      *
-     * @var SqlDiff_TextUI_Formatter
+     * @var SqlDiff\TextUI\Formatter
      */
-    protected $formatter = null;
+    private $formatter;
 
     /**
      * Setup method
      */
     public function setUp() {
-        $this->formatter = new SqlDiff_TextUI_Formatter();
+        $this->formatter = new Formatter();
     }
 
     /**
@@ -71,16 +73,16 @@ class SqlDiff_TextUI_FormatterTest extends PHPUnit_Framework_TestCase {
     public function testFormatMessageWhenFormatterIsDisabled() {
         $this->formatter->disable();
         $message = 'My message';
-        $this->assertSame($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::DELETE));
+        $this->assertSame($message, $this->formatter->format($message, Formatter::DELETE));
     }
 
     public function testFormatMessageWhenFormatterIsEnabled() {
         $this->formatter->enable();
         $message = 'My message';
 
-        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::ADD));
-        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::CHANGE));
-        $this->assertContains($message, $this->formatter->format($message, SqlDiff_TextUI_Formatter::DELETE));
+        $this->assertContains($message, $this->formatter->format($message, Formatter::ADD));
+        $this->assertContains($message, $this->formatter->format($message, Formatter::CHANGE));
+        $this->assertContains($message, $this->formatter->format($message, Formatter::DELETE));
         $this->assertSame($message, $this->formatter->format($message, 'unknown type'));
     }
 }
