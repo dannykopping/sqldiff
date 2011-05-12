@@ -32,6 +32,7 @@
 namespace SqlDiff\Database\Table;
 
 use SqlDiff\Database\Table;
+use SqlDiff\Database\TableInterface;
 use SqlDiff\Database\Table\Mysql as MysqlTable;
 use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
 use SqlDiff\Database\Table\Column\Mysql as MysqlColumn;
@@ -107,7 +108,7 @@ class Mysql extends Table implements TableInterface {
     /**
      * Set the engine
      *
-     * @return SqlDiff\Database\Table\Mysql 
+     * @return SqlDiff\Database\Table\Mysql
      */
     public function setEngine($engine) {
         $this->engine = $engine;
@@ -308,7 +309,7 @@ class Mysql extends Table implements TableInterface {
     /**
      * @see SqlDiff\Database\TableInterface::getAddColumnSql()
      */
-    public function getAddColumnSql(MysqlColumn $column) {
+    public function getAddColumnSql(ColumnInterface $column) {
         $definition = (string) $column;
 
         // If the column has AUTO INCREMENT, we need to append PRIMARY KEY to the statement for it
@@ -345,35 +346,35 @@ class Mysql extends Table implements TableInterface {
     /**
      * @see SqlDiff\Database\TableInterface::getChangeColumnSql()
      */
-    public function getChangeColumnSql(MysqlColumn $column) {
+    public function getChangeColumnSql(ColumnInterface $column) {
         return sprintf('ALTER TABLE `%s` CHANGE `%s` %s;', $this->getName(), $column->getName(), $column);
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getDropColumnSql()
      */
-    public function getDropColumnSql(MysqlColumn $column) {
+    public function getDropColumnSql(ColumnInterface $column) {
         return sprintf('ALTER TABLE `%s` DROP `%s`;', $this->getName(), $column->getName());
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getAddIndexSql()
      */
-    public function getAddIndexSql(MysqlIndex $index) {
+    public function getAddIndexSql(IndexInterface $index) {
         return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $index);
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getChangeIndexSql()
      */
-    public function getChangeIndexSql(MysqlIndex $index) {
+    public function getChangeIndexSql(IndexInterface $index) {
         return sprintf('ALTER TABLE `%s` DROP INDEX `%s`, ADD %s;', $this->getName(), $index->getName(), $index);
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getDropIndexSql()
      */
-    public function getDropIndexSql(MysqlIndex $index) {
+    public function getDropIndexSql(IndexInterface $index) {
         if ($index->getType() === MysqlIndex::PRIMARY_KEY) {
             $name = 'PRIMARY KEY';
         } else {
@@ -386,7 +387,7 @@ class Mysql extends Table implements TableInterface {
     /**
      * @see SqlDiff\Database\TableInterface::getExtraQueries()
      */
-    public function getExtraQueries(MysqlTable $table) {
+    public function getExtraQueries(TableInterface $table) {
         $queries = array();
         $formatter = $this->getDatabase()->getCommand()->getFormatter();
 
