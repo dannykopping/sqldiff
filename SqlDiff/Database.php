@@ -43,7 +43,7 @@ use SqlDiff\Database\TableInterface;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-abstract class Database {
+class Database {
     /**#@+
      * Supported databases
      *
