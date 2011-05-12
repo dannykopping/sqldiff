@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,12 +38,12 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_DatabaseTest extends PHPUnit_Framework_TestCase {
+class DatabaseTest extends \PHPUnit_Framework_TestCase {
     /**
      * Test the factory method
      */
     public function testFactory() {
-        $db = SqlDiff_Database::factory(SqlDiff_Database::MYSQL);
-        $this->assertInstanceOf('SqlDiff_Database_Mysql', $db);
+        $db = Database::factory(Database::MYSQL);
+        $this->assertInstanceOf('SqlDiff\\Database\\Mysql', $db);
     }
 }
