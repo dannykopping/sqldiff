@@ -32,6 +32,8 @@
 namespace SqlDiff\Database\Table\Index;
 
 use SqlDiff\Exception;
+use SqlDiff\Database\Table\Index;
+use SqlDiff\Database\Table\IndexInterface;
 
 /**
  * Class representing a MySQL index
