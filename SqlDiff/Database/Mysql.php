@@ -114,7 +114,7 @@ class Mysql extends Database implements DatabaseInterface {
      * @return SqlDiff\Database\Table\Column\Mysql A new field object
      */
     public function createTableField(\SimpleXMLElement $xml) {
-        $field = new MysqlColunm();
+        $field = new MysqlColumn();
 
         $field->setName((string) $xml['Field'])
               ->setType((string) $xml['Type'])
