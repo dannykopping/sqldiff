@@ -32,6 +32,7 @@
 namespace SqlDiff\Database;
 
 use SqlDiff\Database;
+use SqlDiff\DatabaseInterface;
 use SqlDiff\Database\Table\ColumnInterface;
 use SqlDiff\Database\Table\IndexInterface;
 
@@ -100,7 +101,7 @@ abstract class Table {
      * @param SqlDiff\DatabaseInterface $database
      * @return SqlDiff\Database\Table 
      */
-    public function setDatabase(Database $database) {
+    public function setDatabase(DatabaseInterface $database) {
         $this->database = $database;
 
         return $this;
