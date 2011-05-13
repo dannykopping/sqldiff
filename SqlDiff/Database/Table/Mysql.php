@@ -36,6 +36,7 @@ use SqlDiff\Database\TableInterface;
 use SqlDiff\Database\Table\Mysql as MysqlTable;
 use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
 use SqlDiff\Database\Table\Column\Mysql as MysqlColumn;
+use SqlDiff\TextUI\Formatter;
 
 /**
  * Class representing a MySQL index
@@ -320,7 +321,7 @@ class Mysql extends Table implements TableInterface {
 
             // Remove the PRIMARY KEY index from the table since it will be added in this statement
             foreach ($indexes as $index) {
-                if ($index->getType() === 'PRIMARY KEY') {
+                if ($index->getType() === MysqlIndex::PRIMARY_KEY) {
                     $column->getTable()->removeIndex($index);
                     break;
                 }
@@ -393,7 +394,7 @@ class Mysql extends Table implements TableInterface {
 
         // See if the engines are the same
         if ($this->getEngine() !== $table->getEngine()) {
-            $queries[] = $formatter->format("ALTER TABLE `" . $this->getName() . "` ENGINE = " . $table->getEngine(), SqlDiff_TextUI_Formatter::CHANGE);
+            $queries[] = $formatter->format("ALTER TABLE `" . $this->getName() . "` ENGINE = " . $table->getEngine(), Formatter::CHANGE);
         }
 
         return $queries;
