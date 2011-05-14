@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,19 +38,19 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_Index_AbstractTest extends PHPUnit_Framework_TestCase {
+class IndexTest extends \PHPUnit_Framework_TestCase {
     /**
      * Index instance
      *
-     * @var SqlDiff_Database_Table_Index_Abstract
+     * @var SqlDiff\Database\Table\Index
      */
-    public $index = null;
+    private $index;
 
     /**
      * Set up method
      */
     public function setUp() {
-        $this->index = $this->getMockForAbstractClass('SqlDiff_Database_Table_Index_Abstract');
+        $this->index = new IndexStub();
     }
 
     /**
@@ -59,7 +61,7 @@ class SqlDiff_Database_Table_Index_AbstractTest extends PHPUnit_Framework_TestCa
     }
 
     public function testSetGetTable() {
-        $table = $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract');
+        $table = $this->getMock('SqlDiff\\Database\\TableInterface');
         $this->index->setTable($table);
         $this->assertSame($table, $this->index->getTable());
     }
@@ -78,9 +80,9 @@ class SqlDiff_Database_Table_Index_AbstractTest extends PHPUnit_Framework_TestCa
 
     public function testSetGetFields() {
         $cols = array(
-            $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract'),
-            $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract'),
-            $this->getMockForAbstractClass('SqlDiff_Database_Table_Abstract'),
+            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
+            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
+            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
         );
         $this->index->setFields($cols);
         $this->assertSame($cols, $this->index->getFields());
@@ -90,9 +92,12 @@ class SqlDiff_Database_Table_Index_AbstractTest extends PHPUnit_Framework_TestCa
      * Test the magic to string method
      */
     public function testMagicToStringMethod() {
-        $this->index->expects($this->once())->method('getDefinition')->will($this->returnValue('Some value'));
+        $this->assertSame((string) $this->index, $this->index->getDefinition());
+    }
+}
 
-        // Cast to string to make sure the getDefinition method is called once
-        (string) $this->index;
+class IndexStub extends Index {
+    public function getDefinition() {
+        return 'some definition';
     }
 }
