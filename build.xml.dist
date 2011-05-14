@@ -19,6 +19,12 @@
   <target name="phpunit">
     <exec executable="phpunit" failonerror="true" />
   </target>
+
+  <target name="pdepend">
+    <exec executable="pdepend">
+      <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml ${basedir}/SqlDiff" />
+    </exec>
+  </target>
   
   <target name="docs">
     <exec executable="docblox" />
@@ -38,5 +44,5 @@
     </exec>
   </target>
 
-  <target name="build" depends="clean,phpab,phpunit,docs,phploc,phpcb"/>
+  <target name="build" depends="clean,phpab,phpunit,pdepend,docs,phploc,phpcb"/>
 </project>
