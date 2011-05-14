@@ -3,7 +3,7 @@
     <delete dir="${basedir}/build"/>
     <mkdir dir="${basedir}/build/coverage" />
     <mkdir dir="${basedir}/build/logs" />
-    <mkdir dir="${basedir}/build/docs" />
+    <mkdir dir="${basedir}/build/api" />
     <mkdir dir="${basedir}/build/code-browser" />
   </target>
 
@@ -21,9 +21,7 @@
   </target>
   
   <target name="docs">
-    <exec executable="docblox">
-      <arg line="run -d ${basedir}/SqlDiff -t ${basedir}/build/docs" />
-    </exec>
+    <exec executable="docblox" />
   </target>
   
   <target name="phploc">
