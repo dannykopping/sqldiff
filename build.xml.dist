@@ -3,7 +3,7 @@
     <delete dir="${basedir}/build"/>
     <mkdir dir="${basedir}/build/coverage" />
     <mkdir dir="${basedir}/build/logs" />
-    <mkdir dir="${basedir}/build/docs" />
+    <mkdir dir="${basedir}/build/api" />
     <mkdir dir="${basedir}/build/code-browser" />
   </target>
 
@@ -20,14 +20,8 @@
     <exec executable="phpunit" failonerror="true" />
   </target>
   
-  <target name="phpdoc">
-    <exec executable="phpdoc">
-      <arg line="-d ${basedir}/SqlDiff 
-                 -t ${basedir}/build/docs
-                 -ti 'API docs for SqlDiff'
-                 -dc SqlDiff
-                 -dn SqlDiff_TextUI" />
-    </exec>
+  <target name="docs">
+    <exec executable="docblox" />
   </target>
   
   <target name="phploc">
@@ -44,5 +38,5 @@
     </exec>
   </target>
 
-  <target name="build" depends="clean,phpab,phpunit,phpdoc,phploc,phpcb"/>
+  <target name="build" depends="clean,phpab,phpunit,docs,phploc,phpcb"/>
 </project>

@@ -1,1 +1,4 @@
 build
+phpunit.xml
+build.xml
+docblox.xml

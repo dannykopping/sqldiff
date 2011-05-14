@@ -29,6 +29,13 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database;
+
+use SqlDiff\Database;
+use SqlDiff\DatabaseInterface;
+use SqlDiff\Database\Table\ColumnInterface;
+use SqlDiff\Database\Table\IndexInterface;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,63 +45,63 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-abstract class SqlDiff_Database_Table_Abstract {
+abstract class Table {
     /**
      * The database object this table belongs to
      *
-     * @var SqlDiff_Database_Abstract
+     * @var Database 
      */
-    protected $database = null;
+    private $database;
 
     /**
      * The name of the table
      *
      * @var string
      */
-    protected $name = null;
+    private $name;
 
     /**
      * Table comment
      *
      * @var string
      */
-    protected $comment = null;
+    private $comment;
 
     /**
      * Columns in the table
      *
      * @var array An array of SqlDiff_Database_Table_Column_Abstract objects
      */
-    protected $columns = array();
+    private $columns = array();
 
     /**
      * Indexes in the table
      *
      * @var array An array of SqlDiff_Database_Table_Index_Abstract objects
      */
-    protected $indexes = array();
+    private $indexes = array();
 
     /**
      * Counter used for column positions
      *
      * @var int
      */
-    protected $position = 0;
+    private $position = 0;
 
     /**
      * Array holding positions for the different columns
      *
      * @var array
      */
-    protected $columnPositions = array();
+    private $columnPositions = array();
 
     /**
      * Set the database object
      *
-     * @param SqlDiff_Database_Abstract $database
-     * @return SqlDiff_Database_Table_Abstract
+     * @param SqlDiff\DatabaseInterface $database
+     * @return SqlDiff\Database\Table 
      */
-    public function setDatabase(SqlDiff_Database_Abstract $database) {
+    public function setDatabase(DatabaseInterface $database) {
         $this->database = $database;
 
         return $this;
@@ -103,7 +110,7 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Get the database object
      *
-     * @return SqlDiff_Database_Abstract
+     * @return SqlDiff\DatabaseInterface 
      */
     public function getDatabase() {
         return $this->database;
@@ -140,7 +147,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Set the name
      *
      * @param string $name
-     * @return SqlDiff_Database_Table_Abstract
+     * @return SqlDiff\Database\Table 
      */
     public function setName($name) {
         $this->name = $name;
@@ -161,7 +168,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Set a table comment
      *
      * @param string $comment
-     * @return SqlDiff_Database_Table_Abstract
+     * @return SqlDiff\Database\Table
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -172,10 +179,10 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Add a column
      *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return SqlDiff_Database_Table_Abstract
+     * @param SqlDiff\Database\Table\ColumnInterface $column
+     * @return SqlDiff\Database\Table 
      */
-    public function addColumn(SqlDiff_Database_Table_Column_Abstract $column) {
+    public function addColumn(ColumnInterface $column) {
         $column->setTable($this);
         $colName = $column->getName();
         $this->columns[$colName] = $column;
@@ -188,7 +195,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Get a column based on a position
      *
      * @param int $position The position to fetch (0-based index)
-     * @return SqlDiff_Database_Table_Column_Abstract|null
+     * @return SqlDiff\Database\Table\ColumnIntterface|null
      */
     public function getColumnByPosition($position) {
         if (!isset($this->columnPositions[$position]) || !isset($this->columns[$this->columnPositions[$position]])) {
@@ -201,12 +208,12 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Get the position of the column (0-based index)
      *
-     * @param string|SqlDiff_Database_Table_Column_Abstract $column Either a column name or a
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
      *                                                              column object
      * @return int|null
      */
     public function getColumnPosition($column) {
-        if ($column instanceof SqlDiff_Database_Table_Column_Abstract) {
+        if ($column instanceof ColumnInterface) {
             $column = $column->getName();
         }
 
@@ -218,8 +225,8 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Add an array of columns
      *
-     * @param array $columns An array of SqlDiff_Database_Table_Column_Abstract objects
-     * @return SqlDiff_Database_Table_Abstract
+     * @param array $columns An array of SqlDiff\Database\Table\ColumnInterface objects
+     * @return SqlDiff\Database\Table 
      */
     public function addColumns(array $columns) {
         foreach ($columns as $column) {
@@ -232,12 +239,12 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Remove a column
      *
-     * @param string|SqlDiff_Database_Table_Column_Abstract $column Either a column name or a
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
      *                                                              column object
-     * @return SqlDiff_Database_Table_Abstract
+     * @return SqlDiff\Database\Table 
      */
     public function removeColumn($column) {
-        if ($column instanceof SqlDiff_Database_Table_Column_Abstract) {
+        if ($column instanceof ColumnInterface) {
             $column = $column->getName();
         }
 
@@ -255,7 +262,7 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Fetch all columns
      *
-     * @return array An array of SqlDiff_Database_Table_Column_Abstract objects
+     * @return array An array of SqlDiff\Database\Table\ColumnInterface objects
      */
     public function getColumns() {
         return $this->columns;
@@ -265,7 +272,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Fetch a single column
      *
      * @param string $name
-     * @return null|SqlDiff_Database_Table_Column_Abstract
+     * @return null|SqlDiff\Database\Table\ColumnInterface 
      */
     public function getColumn($name) {
         if (empty($this->columns[$name])) {
@@ -279,12 +286,12 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * See if this table has a specific column
      *
-     * @param string|SqlDiff_Database_Table_Column_Abstract $column Either a column name or a
-     *                                                                  column object
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
+     *                                                              column object
      * @return boolean
      */
     public function hasColumn($column) {
-        if ($column instanceof SqlDiff_Database_Table_Column_Abstract) {
+        if ($column instanceof ColumnInterface) {
             $column = $column->getName();
         }
 
@@ -294,10 +301,10 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Add an index
      *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return SqlDiff_Database_Table_Abstract
+     * @param SqlDiff\Database\Table\IndexInterface $index
+     * @return SqlDiff\Database\Table 
      */
-    public function addIndex(SqlDiff_Database_Table_Index_Abstract $index) {
+    public function addIndex(IndexInterface $index) {
         $index->setTable($this);
         $name = $index->getName();
 
@@ -327,12 +334,12 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Remove an index
      *
-     * @param string|SqlDiff_Database_Table_Index_Abstract $index Either an index name or an
-     *                                                                index object
-     * @return SqlDiff_Database_Table_Abstract
+     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
+     *                                                            index object
+     * @return SqlDiff\Database\Table 
      */
     public function removeIndex($index) {
-        if ($index instanceof SqlDiff_Database_Table_Index_Abstract) {
+        if ($index instanceof IndexInterface) {
             $index = $index->getName();
         }
 
@@ -344,7 +351,7 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * Get all indexes
      *
-     * @return array Returns an array of SqlDiff_Database_Table_Index_Abstract objects
+     * @return array Returns an array of SqlDiff\Database\Table\IndexInterface objects
      */
     public function getIndexes() {
         return $this->indexes;
@@ -354,7 +361,7 @@ abstract class SqlDiff_Database_Table_Abstract {
      * Fetch a single index
      *
      * @param string $index
-     * @return null|SqlDiff_Database_Table_Index_Abstract
+     * @return null|SqlDiff\Database\Table
      */
     public function getIndex($index) {
         if (empty($this->indexes[$index])) {
@@ -367,88 +374,15 @@ abstract class SqlDiff_Database_Table_Abstract {
     /**
      * See if this table has a specific index
      *
-     * @param string|SqlDiff_Database_Table_Index_Abstract $index Either an index name or an
-     *                                                                index object
+     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
+     *                                                            index object
      * @return boolean
      */
     public function hasIndex($index) {
-        if ($index instanceof SqlDiff_Database_Table_Index_Abstract) {
+        if ($index instanceof IndexInterface) {
             $index = $index->getName();
         }
 
         return isset($this->indexes[$index]);
     }
-
-    /**
-     * Method that can be implemented by child classes to generate extra database-specific queries
-     *
-     * @param SqlDiff_Database_Table_Abstract $table
-     * @return array Returns an array of pre-formatted queries
-     * @codeCoverageIgnore
-     */
-    public function getExtraQueries(SqlDiff_Database_Table_Abstract $table) {
-        return array();
-    }
-
-    /**
-     * Syntax for creating a table
-     *
-     * @return string
-     */
-    abstract public function getCreateTableSql();
-
-    /**
-     * Syntax for dropping a table
-     *
-     * @return string
-     */
-    abstract public function getDropTableSql();
-
-    /**
-     * Syntax for adding a column to the table
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
-     */
-    abstract public function getAddColumnSql(SqlDiff_Database_Table_Column_Abstract $column);
-
-    /**
-     * Syntax for changing a column
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
-     */
-    abstract public function getChangeColumnSql(SqlDiff_Database_Table_Column_Abstract $column);
-
-    /**
-     * Syntax for dropping a column
-     *
-     * @param SqlDiff_Database_Table_Column_Abstract $column
-     * @return string
-     */
-    abstract public function getDropColumnSql(SqlDiff_Database_Table_Column_Abstract $column);
-
-    /**
-     * Syntax for adding an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
-     */
-    abstract public function getAddIndexSql(SqlDiff_Database_Table_Index_Abstract $index);
-
-    /**
-     * Syntax for changing an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
-     */
-    abstract public function getChangeIndexSql(SqlDiff_Database_Table_Index_Abstract $index);
-
-    /**
-     * Syntax for dropping an index
-     *
-     * @param SqlDiff_Database_Table_Index_Abstract $index
-     * @return string
-     */
-    abstract public function getDropIndexSql(SqlDiff_Database_Table_Index_Abstract $index);
 }

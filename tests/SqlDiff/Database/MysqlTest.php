@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,19 +38,19 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
+class MysqlTest extends \PHPUnit_Framework_TestCase {
     /**
      * Database instance
      *
-     * @var SqlDiff_Database_Mysql
+     * @var SqlDiff\Database\Mysql
      */
-    protected $database = null;
+    private $database;
 
     /**
      * Setup method
      */
     public function setUp() {
-        $this->database = new SqlDiff_Database_Mysql();
+        $this->database = new Mysql();
     }
 
     /**
@@ -96,14 +98,14 @@ class SqlDiff_Database_MysqlTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException SqlDiff_Exception
+     * @expectedException SqlDiff\Exception
      */
     public function testParseDumpWithInvalidXmlFile() {
         $this->database->parseDump(__FILE__, array('include' => array(), 'exclude' => array()));
     }
 
     /**
-     * @expectedException SqlDiff_Exception
+     * @expectedException SqlDiff\Exception
      */
     public function testParseDumpWithInvalidNamespace() {
         $path = SQLDIFF_FILES . '/missing_namespace.xml';

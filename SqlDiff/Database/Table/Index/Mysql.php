@@ -29,6 +29,12 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table\Index;
+
+use SqlDiff\Exception;
+use SqlDiff\Database\Table\Index;
+use SqlDiff\Database\Table\IndexInterface;
+
 /**
  * Class representing a MySQL index
  *
@@ -38,9 +44,9 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_Index_Mysql extends SqlDiff_Database_Table_Index_Abstract {
+class Mysql extends Index implements IndexInterface {
     /**#@+
-     * Different keya
+     * Different keys
      *
      * @var string
      */
@@ -61,8 +67,8 @@ class SqlDiff_Database_Table_Index_Mysql extends SqlDiff_Database_Table_Index_Ab
      * Set the type
      *
      * @param string $type
-     * @throws SqlDiff_Exception
-     * @return SqlDiff_Database_Table_Index_Mysql
+     * @throws SqlDiff\Exception
+     * @return SqlDiff\Database\Table\Index\Mysql
      */
     public function setType($type) {
         switch ($type) {
@@ -72,10 +78,10 @@ class SqlDiff_Database_Table_Index_Mysql extends SqlDiff_Database_Table_Index_Ab
             case self::KEY:
                 break;
             default:
-                throw new SqlDiff_Exception('Unknown index type: ' . $type);
+                throw new Exception('Unknown index type: ' . $type);
         }
 
-        $this->type = $type;
+        parent::setType($type);
 
         return $this;
     }
@@ -86,17 +92,17 @@ class SqlDiff_Database_Table_Index_Mysql extends SqlDiff_Database_Table_Index_Ab
      * @return string
      */
     public function getName() {
-        if (empty($this->name) && $this->getType() === self::PRIMARY_KEY) {
+        $name = parent::getName();
+
+        if (empty($name) && $this->getType() === self::PRIMARY_KEY) {
             return self::PRIMARY_KEY_NAME;
         }
 
-        return $this->name;
+        return $name;
     }
 
     /**
-     * Get the definition of this index
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\IndexInterface::getDefinition()
      */
     public function getDefinition() {
         $ret = $this->getType();

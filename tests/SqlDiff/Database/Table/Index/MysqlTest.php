@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table\Index;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,19 +38,19 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_Index_MysqlTest extends PHPUnit_Framework_TestCase {
+class MysqlTest extends \PHPUnit_Framework_TestCase {
     /**
      * Index instance
      *
-     * @var SqlDiff_Database_Table_Index_Mysql
+     * @var SqlDiff\Database\Table\Index\Mysql
      */
-    protected $index = null;
+    private $index;
 
     /**
      * Set up method
      */
     public function setUp() {
-        $this->index = new SqlDiff_Database_Table_Index_Mysql();
+        $this->index = new Mysql();
     }
 
     /**
@@ -62,7 +64,7 @@ class SqlDiff_Database_Table_Index_MysqlTest extends PHPUnit_Framework_TestCase 
      * Try to set and get the type attribute
      */
     public function testSetGetType() {
-        $type = SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY;
+        $type = Mysql::PRIMARY_KEY;
         $this->index->setType($type);
         $this->assertSame($type, $this->index->getType());
     }
@@ -70,7 +72,7 @@ class SqlDiff_Database_Table_Index_MysqlTest extends PHPUnit_Framework_TestCase 
     /**
      * Try to set an invalid type
      *
-     * @expectedException SqlDiff_Exception
+     * @expectedException SqlDiff\Exception
      */
     public function testSetInvalidType() {
         $type = 'invalid type';
@@ -91,60 +93,44 @@ class SqlDiff_Database_Table_Index_MysqlTest extends PHPUnit_Framework_TestCase 
      * Try to get the name attribute when we are dealing with a primary key
      */
     public function testGetNameWhenTypeIsPrimaryKey() {
-        $this->index->setType(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY);
-        $this->assertSame(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY_NAME, $this->index->getName());
-    }
-
-    public function testGetDefinitionForPrimaryKey() {
-        $this->markTestIncomplete('Not implemented');
-        // PRIMARY KEY (`id`),
-    }
-
-    public function testGetDefinitionForUniqueKey() {
-        $this->markTestIncomplete('Not implemented');
-        // UNIQUE KEY `site` (`site`),
-    }
-
-    public function testGetDefinitionForRegularIndex() {
-        $this->markTestIncomplete('Not implemented');
-        // KEY `name` (`name`),
+        $this->index->setType(Mysql::PRIMARY_KEY);
+        $this->assertSame(Mysql::PRIMARY_KEY_NAME, $this->index->getName());
     }
 
     public function testGetDefinitionForFulltextIndex() {
         $indexName  = 'indexName';
         $columnName = 'columnName';
 
-        $key = new SqlDiff_Database_Table_Index_Mysql();
-        $key->setName($indexName);
+        $this->index->setName($indexName);
 
-        $col1 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName'));
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName'));
         $col1->expects($this->any())->method('getName')->will($this->returnValue($columnName));
 
-        $key->setFields(array($col1));
+        $this->index->setFields(array($col1));
+        $this->index->setType(Mysql::FULLTEXT);
 
-        $key->setType(SqlDiff_Database_Table_Index_Mysql::FULLTEXT);
-        $this->assertSame('FULLTEXT KEY `' . $indexName . '` (`' . $columnName . '`)', $key->getDefinition());
+        $this->assertSame('FULLTEXT KEY `' . $indexName . '` (`' . $columnName . '`)', $this->index->getDefinition());
 
-        $key->setType(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY);
-        $this->assertSame('PRIMARY KEY (`' . $columnName . '`)', $key->getDefinition());
+        $this->index->setType(Mysql::PRIMARY_KEY);
+        $this->assertSame('PRIMARY KEY (`' . $columnName . '`)', $this->index->getDefinition());
 
-        $key->setType(SqlDiff_Database_Table_Index_Mysql::UNIQUE);
-        $this->assertSame('UNIQUE KEY `' . $indexName . '` (`' . $columnName . '`)', $key->getDefinition());
+        $this->index->setType(Mysql::UNIQUE);
+        $this->assertSame('UNIQUE KEY `' . $indexName . '` (`' . $columnName . '`)', $this->index->getDefinition());
 
-        $key->setType(SqlDiff_Database_Table_Index_Mysql::KEY);
-        $this->assertSame('KEY `' . $indexName . '` (`' . $columnName . '`)', $key->getDefinition());
+        $this->index->setType(Mysql::KEY);
+        $this->assertSame('KEY `' . $indexName . '` (`' . $columnName . '`)', $this->index->getDefinition());
 
         $column2Name = 'column2Name';
         $column3Name = 'column3Name';
 
-        $col2 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName'));
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName'));
         $col2->expects($this->any())->method('getName')->will($this->returnValue($column2Name));
 
-        $col3 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName'));
+        $col3 = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName'));
         $col3->expects($this->any())->method('getName')->will($this->returnValue($column3Name));
 
-        $key->addFields(array($col2, $col3))->setType(SqlDiff_Database_Table_Index_Mysql::UNIQUE);
+        $this->index->addFields(array($col2, $col3))->setType(Mysql::UNIQUE);
 
-        $this->assertSame('UNIQUE KEY `indexName` (`columnName`, `column2Name`, `column3Name`)', $key->getDefinition());
+        $this->assertSame('UNIQUE KEY `indexName` (`columnName`, `column2Name`, `column3Name`)', $this->index->getDefinition());
     }
 }

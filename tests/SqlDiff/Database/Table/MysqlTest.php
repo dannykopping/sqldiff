@@ -29,6 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table;
+
+use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,19 +40,19 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_MysqlTest extends PHPUnit_Framework_TestCase {
+class MysqlTest extends \PHPUnit_Framework_TestCase {
     /**
      * Table instance
      *
-     * @var SqlDiff_Database_Table_Mysql
+     * @var SqlDiff\Database\Table\Mysql
      */
-    protected $table = null;
+    private $table;
 
     /**
      * Set up method
      */
     public function setUp() {
-        $this->table = new SqlDiff_Database_Table_Mysql();
+        $this->table = new Mysql();
     }
 
     /**
@@ -152,27 +156,27 @@ class SqlDiff_Database_Table_MysqlTest extends PHPUnit_Framework_TestCase {
                     ->setFixedRowFormat($fixedRowFormat);
 
         // Add some columns
-        $id = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
+        $id = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName', 'getDefinition'));
         $id->expects($this->once())->method('getName')->will($this->returnValue('id'));
         $id->expects($this->once())->method('getDefinition')->will($this->returnValue('`id` INT UNSIGNED NOT NULL AUTO_INCREMENT'));
 
-        $name = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
+        $name = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName', 'getDefinition'));
         $name->expects($this->once())->method('getName')->will($this->returnValue('name'));
         $name->expects($this->once())->method('getDefinition')->will($this->returnValue('`name` VARCHAR (100) NOT NULL'));
 
-        $email = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
+        $email = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName', 'getDefinition'));
         $email->expects($this->once())->method('getName')->will($this->returnValue('email'));
         $email->expects($this->once())->method('getDefinition')->will($this->returnValue('`email` VARCHAR (200) NOT NULL'));
 
-        $idIndex = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getName', 'getDefinition'));
+        $idIndex = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getName', 'getDefinition'));
         $idIndex->expects($this->once())->method('getName')->will($this->returnValue('PK'));
         $idIndex->expects($this->once())->method('getDefinition')->will($this->returnValue('PRIMARY KEY `id`'));
 
-        $nameIndex = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getName', 'getDefinition'));
+        $nameIndex = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getName', 'getDefinition'));
         $nameIndex->expects($this->once())->method('getName')->will($this->returnValue('name'));
         $nameIndex->expects($this->once())->method('getDefinition')->will($this->returnValue('KEY `name` (`name`)'));
 
-        $emailIndex = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getName', 'getDefinition'));
+        $emailIndex = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getName', 'getDefinition'));
         $emailIndex->expects($this->once())->method('getName')->will($this->returnValue('email'));
         $emailIndex->expects($this->once())->method('getDefinition')->will($this->returnValue('UNIQUE KEY `email` (`email`)'));
 
@@ -198,12 +202,12 @@ UNIQUE KEY `email` (`email`)
     public function testGetAddColumnSql() {
         $this->table->setName('tableName');
 
-        $col1 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getDefinition'));
-        $col1->setName('name');
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getDefinition', 'getName'));
+        $col1->expects($this->any())->method('getName')->will($this->returnValue('name'));
         $col1->expects($this->any())->method('getDefinition')->will($this->returnValue('`name` VARCHAR (100) NOT NULL'));
 
-        $col2 = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getDefinition', 'getPreviousColumn'));
-        $col2->setName('password');
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getDefinition', 'getPreviousColumn', 'getName'));
+        $col2->expects($this->any())->method('getName')->will($this->returnValue('password'));
         $col2->expects($this->any())->method('getDefinition')->will($this->returnValue('`password` VARCHAR (32) NOT NULL'));
         $col2->expects($this->any())->method('getPreviousColumn')->will($this->returnValue($col1));
 
@@ -214,19 +218,19 @@ UNIQUE KEY `email` (`email`)
     }
 
     public function testGetAddColumnSqlWhenColumnIsAutoIncrement() {
-        $sourceTable = $this->getMock('SqlDiff_Database_Table_Mysql', array('getIndexes'));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getType', 'getName'));
+        $index->expects($this->any())->method('getName')->will($this->returnValue(''));
+        $index->expects($this->any())->method('getType')->will($this->returnValue(MysqlIndex::PRIMARY_KEY));
 
-        // Add an index and a column to the source
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getType'));
-        $index->expects($this->any())->method('getType')->will($this->returnValue(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY));
+        $sourceTable = $this->getMock('SqlDiff\\Database\\Table\\Mysql', array('getIndexes', 'removeIndex'));
+        $sourceTable->expects($this->once())->method('getIndexes')->will($this->returnValue(array($index)));
+        $sourceTable->expects($this->once())->method('removeIndex')->with($index);
 
-        $col = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
-        $col->setAutoIncrement(true);
-        $col->setTable($sourceTable);
+        $col = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName', 'getDefinition', 'getAutoIncrement', 'getTable'));
+        $col->expects($this->any())->method('getAutoIncrement')->will($this->returnValue(true));
+        $col->expects($this->any())->method('getTable')->will($this->returnValue($sourceTable));
         $col->expects($this->any())->method('getName')->will($this->returnValue('id'));
         $col->expects($this->any())->method('getDefinition')->will($this->returnValue('`id` int(11) NOT NULL AUTO_INCREMENT'));
-
-        $sourceTable->expects($this->once())->method('getIndexes')->will($this->returnValue(array($index)));
 
         $this->table->setName('target');
         $this->assertSame(
@@ -241,7 +245,7 @@ UNIQUE KEY `email` (`email`)
     public function testGetChangeColumnSql() {
         $this->table->setName('tableName');
 
-        $col = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName', 'getDefinition'));
+        $col = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName', 'getDefinition'));
         $col->expects($this->once())->method('getDefinition')->will($this->returnValue('`name` VARCHAR (100) NOT NULL'));
         $col->expects($this->once())->method('getName')->will($this->returnValue('name'));
 
@@ -257,7 +261,7 @@ UNIQUE KEY `email` (`email`)
     public function testGetDropColumnSql() {
         $this->table->setName('tableName');
 
-        $col = $this->getMock('SqlDiff_Database_Table_Column_Mysql', array('getName'));
+        $col = $this->getMock('SqlDiff\\Database\\Table\\Column\\Mysql', array('getName'));
         $col->expects($this->once())->method('getName')->will($this->returnValue('name'));
 
         $sql = $this->table->getDropColumnSql($col);
@@ -272,7 +276,7 @@ UNIQUE KEY `email` (`email`)
     public function testGetAddIndexSql() {
         $this->table->setName('tableName');
 
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getDefinition'));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getDefinition'));
         $index->expects($this->once())->method('getDefinition')->will($this->returnValue('UNIQUE (`name`)'));
 
         $sql = $this->table->getAddIndexSql($index);
@@ -287,7 +291,7 @@ UNIQUE KEY `email` (`email`)
     public function testGetChangeIndexSql() {
         $this->table->setName('tableName');
 
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getName', 'getDefinition'));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getName', 'getDefinition'));
         $index->expects($this->once())->method('getName')->will($this->returnValue('name'));
         $index->expects($this->once())->method('getDefinition')->will($this->returnValue('UNIQUE (`name`)'));
 
@@ -303,9 +307,9 @@ UNIQUE KEY `email` (`email`)
     public function testGetDropIndexSql() {
         $this->table->setName('tableName');
 
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getName', 'getType'));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getName', 'getType'));
         $index->expects($this->once())->method('getName')->will($this->returnValue('name'));
-        $index->expects($this->once())->method('getType')->will($this->returnValue(SqlDiff_Database_Table_Index_Mysql::KEY));
+        $index->expects($this->once())->method('getType')->will($this->returnValue(MysqlIndex::KEY));
 
         $sql = $this->table->getDropIndexSql($index);
         $expectedSql = "ALTER TABLE `tableName` DROP INDEX `name`;";
@@ -319,8 +323,8 @@ UNIQUE KEY `email` (`email`)
     public function testGetDropIndexSqlWhenIndexIsPrimaryKey() {
         $this->table->setName('tableName');
 
-        $index = $this->getMock('SqlDiff_Database_Table_Index_Mysql', array('getType'));
-        $index->expects($this->once())->method('getType')->will($this->returnValue(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\Index\\Mysql', array('getType'));
+        $index->expects($this->once())->method('getType')->will($this->returnValue(MysqlIndex::PRIMARY_KEY));
 
         $sql = $this->table->getDropIndexSql($index);
         $expectedSql = "ALTER TABLE `tableName` DROP PRIMARY KEY;";
@@ -342,17 +346,17 @@ UNIQUE KEY `email` (`email`)
      * Try to get extra queries specific to MySQL
      */
     public function testGetExtraQueries() {
-        $formatter = $this->getMock('SqlDiff_TextUI_Formatter', array('format'));
+        $formatter = $this->getMock('SqlDiff\\TextUI\\Formatter', array('format'));
         $formatter->expects($this->once())->method('format')->will($this->returnArgument(0));
 
-        $command = $this->getMock('SqlDiff_TextUI_Command', array('getFormatter'));
+        $command = $this->getMock('SqlDiff\\TextUI\\Command', array('getFormatter'));
         $command->expects($this->once())->method('getFormatter')->will($this->returnValue($formatter));
 
-        $db = $this->getMock('SqlDiff_Database_Mysql', array('getCommand'));
+        $db = $this->getMock('SqlDiff\\Database\\Mysql', array('getCommand'));
         $db->expects($this->once())->method('getCommand')->will($this->returnValue($command));
 
         $this->table->setEngine('InnoDB')->setName('user')->setDatabase($db);
-        $target = $this->getMock('SqlDiff_Database_Table_Mysql', array('getEngine'));
+        $target = $this->getMock('SqlDiff\\Database\\Table\\Mysql', array('getEngine'));
         $target->expects($this->exactly(2))->method('getEngine')->will($this->returnValue('MyISAM'));
 
         $this->assertSame(array('ALTER TABLE `user` ENGINE = MyISAM'), $this->table->getExtraQueries($target));

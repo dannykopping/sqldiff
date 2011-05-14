@@ -32,7 +32,7 @@
 namespace SqlDiff;
 
 /**
- * Class representing a MySQL index
+ * Interface for database classes
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -40,33 +40,16 @@ namespace SqlDiff;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Version {
+interface DatabaseInterface {
     /**
-     * The current version
+     * Parse a dump file
      *
-     * @var string
-     */
-    static protected $id = '@package_version@';
-
-    /**
-     * Get the version number only
+     * If anything goes wrong, throw an SqlDiff\Exception
      *
-     * @return string
+     * @param string $filePath Path to the dump file
+     * @param array $filter Array with 'include' and 'exclude' keys that both are arrays of tables
+     *                      to include/exclude
+     * @throws SqlDiff\Exception
      */
-    static public function getVersionNumber() {
-        if (strpos(static::$id, '@package_version') === 0) {
-            return 'dev';
-        }
-
-        return static::$id;
-    }
-
-    /**
-     * Get the version string
-     *
-     * @return string
-     */
-    static public function getVersionString() {
-        return 'SqlDiff-' . static::getVersionNumber() . ' by Christer Edvartsen.' . PHP_EOL;
-    }
+    function parseDump($filePath, array $filter);
 }

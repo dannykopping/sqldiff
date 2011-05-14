@@ -29,6 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
+use \Mockery as m;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -36,12 +40,130 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_DatabaseTest extends PHPUnit_Framework_TestCase {
+class DatabaseTest extends \PHPUnit_Framework_TestCase {
+    /**
+     * Database instance
+     *
+     * @var SqlDiff\Database
+     */
+    private $db;
+
+    /**
+     * Set up method
+     */
+    public function setUp() {
+        $this->db = new Database();
+    }
+
+    /**
+     * Tear down method
+     */
+    public function tearDown() {
+        $this->db = null;
+        m::close();
+    }
+
+    /**
+     * Test the set and get methods for the "name" attribute
+     */
+    public function testSetGetName() {
+        $name = 'dbName';
+
+        $this->db->setName($name);
+        $this->assertSame($name, $this->db->getName());
+    }
+
+    /**
+     * Try to fetch number of tables added when none have been added yet
+     */
+    public function testGetNumTablesWithNoTablesAdded() {
+        $this->assertSame(0, $this->db->getNumTables(), 'Expected 0 tables, got ' . $this->db->getNumTables());
+    }
+
+    /**
+     * Add some tables, then check the getNumTables method
+     */
+    public function testAddTableThenGetNumTables() {
+        $table = m::mock('SqlDiff\\Database\\TableInterface');
+        $table->shouldReceive('setDatabase')->once()->with($this->db);
+        $table->shouldReceive('getName')->times(2)->andReturn('tableName');
+        $this->db->addTable($table);
+        $this->assertSame(1, $this->db->getNumTables(), 'Expected 1 table, got ' . $this->db->getNumTables());
+        $this->db->removeTable($table);
+        $this->assertSame(0, $this->db->getNumTables(), 'Expected 0 tables, got ' . $this->db->getNumTables());
+    }
+
+    /**
+     * Try to remove a table using its name as argument to the removeTable method
+     */
+    public function testRemoveTableUsingNameAsArgument() {
+        $table = m::mock('SqlDiff\\Database\\TableInterface');
+        $table->shouldReceive('getName')->once()->andReturn('TableName');
+        $table->shouldReceive('setDatabase')->once()->with($this->db);
+        $this->db->addTable($table);
+        $this->assertSame(1, $this->db->getNumTables(), 'Expected 1 table, got ' . $this->db->getNumTables());
+        $this->db->removeTable('TableName');
+        $this->assertSame(0, $this->db->getNumTables(), 'Expected 0 tables, got ' . $this->db->getNumTables());
+    }
+
+    /**
+     * Test the hasTable method
+     */
+    public function testHasTable() {
+        $tableName = 'Name';
+        $table = m::mock('SqlDiff\\Database\\TableInterface');
+        $table->shouldReceive('setDatabase')->once()->with($this->db);
+        $table->shouldReceive('getName')->times(3)->andReturn($tableName);
+
+        $this->assertFalse($this->db->hasTable($tableName));
+        $this->assertFalse($this->db->hasTable($table));
+
+        $this->db->addTable($table);
+
+        $this->assertTrue($this->db->hasTable($tableName));
+        $this->assertTrue($this->db->hasTable($table));
+    }
+
+    /**
+     * Try to add a table then get it back using the table name
+     */
+    public function testAddAndGetTable() {
+        $tableName = 'Name';
+        $table = m::mock('SqlDiff\\Database\\TableInterface');
+        $table->shouldReceive('setDatabase')->once()->with($this->db);
+        $table->shouldReceive('getName')->once()->andReturn($tableName);
+        
+        $this->db->addTable($table);
+
+        $this->assertSame($table, $this->db->getTable($tableName));
+    }
+
+    /**
+     * Try to get a table that does not exist
+     */
+    public function testGetTableThatDoesNotExist() {
+        $this->assertNull($this->db->getTable('foobar'));
+    }
+
+    /**
+     * Try to fetch all tables
+     */
+    public function testGetTables() {
+        $tables = $this->db->getTables();
+        $this->assertInternalType('array', $tables);
+    }
+
+    public function testSetGetCommand() {
+        $command = $this->getMock('SqlDiff\\TextUI\\Command');
+        $this->db->setCommand($command);
+        $this->assertSame($command, $this->db->getCommand());
+    }
+
     /**
      * Test the factory method
      */
     public function testFactory() {
-        $db = SqlDiff_Database::factory(SqlDiff_Database::MYSQL);
-        $this->assertInstanceOf('SqlDiff_Database_Mysql', $db);
+        $db = Database::factory(Database::MYSQL);
+        $this->assertInstanceOf('SqlDiff\\Database\\Mysql', $db);
     }
 }

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true"
-         bootstrap="SqlDiff/Autoload.php">
+         bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="sqldiff">
             <directory suffix="Test.php">tests/SqlDiff</directory>
         </testsuite>
     </testsuites>
+
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener" 
+                  file="Mockery/Adapter/Phpunit/TestListener.php" />
+    </listeners>
   
     <php>
         <const name="SQLDIFF_FILES" value="tests/_files"/>

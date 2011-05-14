@@ -29,10 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff;
+namespace SqlDiff\Database\Table;
 
 /**
- * Class representing a MySQL index
+ * Interface for table indexes
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -40,33 +40,11 @@ namespace SqlDiff;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Version {
+interface IndexInterface {
     /**
-     * The current version
-     *
-     * @var string
-     */
-    static protected $id = '@package_version@';
-
-    /**
-     * Get the version number only
+     * Get the definition of this index
      *
      * @return string
      */
-    static public function getVersionNumber() {
-        if (strpos(static::$id, '@package_version') === 0) {
-            return 'dev';
-        }
-
-        return static::$id;
-    }
-
-    /**
-     * Get the version string
-     *
-     * @return string
-     */
-    static public function getVersionString() {
-        return 'SqlDiff-' . static::getVersionNumber() . ' by Christer Edvartsen.' . PHP_EOL;
-    }
+    function getDefinition();
 }

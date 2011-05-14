@@ -29,10 +29,13 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff;
+namespace SqlDiff\Database;
 
+use SqlDiff\Database\Table\ColumnInterface;
+use SqlDiff\Database\Table\IndexInterface;
+ 
 /**
- * Class representing a MySQL index
+ * Database table interface 
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -40,33 +43,74 @@ namespace SqlDiff;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Version {
+interface TableInterface {
     /**
-     * The current version
-     *
-     * @var string
-     */
-    static protected $id = '@package_version@';
-
-    /**
-     * Get the version number only
+     * Syntax for creating a table
      *
      * @return string
      */
-    static public function getVersionNumber() {
-        if (strpos(static::$id, '@package_version') === 0) {
-            return 'dev';
-        }
-
-        return static::$id;
-    }
+    function getCreateTableSql();
 
     /**
-     * Get the version string
+     * Syntax for dropping a table
      *
      * @return string
      */
-    static public function getVersionString() {
-        return 'SqlDiff-' . static::getVersionNumber() . ' by Christer Edvartsen.' . PHP_EOL;
-    }
+    function getDropTableSql();
+
+    /**
+     * Syntax for adding a column to the table
+     *
+     * @param SqlDiff\Database\Table\ColumnInterface $column
+     * @return string
+     */
+    function getAddColumnSql(ColumnInterface $column);
+
+    /**
+     * Syntax for changing a column
+     *
+     * @param SqlDiff\Database\Table\ColumnInterface $column
+     * @return string
+     */
+    function getChangeColumnSql(ColumnInterface $column);
+
+    /**
+     * Syntax for dropping a column
+     *
+     * @param SqlDiff\Database\Table\ColumnInterface $column
+     * @return string
+     */
+    function getDropColumnSql(ColumnInterface $column);
+
+    /**
+     * Syntax for adding an index
+     *
+     * @param SqlDiff\Database\Table\IndexInterface $index
+     * @return string
+     */
+    function getAddIndexSql(IndexInterface $index);
+
+    /**
+     * Syntax for changing an index
+     *
+     * @param SqlDiff\Database\Table\IndexInterface $index
+     * @return string
+     */
+    function getChangeIndexSql(IndexInterface $index);
+
+    /**
+     * Syntax for dropping an index
+     *
+     * @param SqlDiff\Database\Table\IndexInterface $index
+     * @return string
+     */
+    function getDropIndexSql(IndexInterface $index);
+
+    /**
+     * Get remaning implementation specific queries
+     *
+     * @param SqlDiff\Database\TableInterface $table
+     * @return array Returns an array of pre-formatted queries
+     */
+    function getExtraQueries(TableInterface $table);
 }

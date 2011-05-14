@@ -1,6 +1,12 @@
 Changelog for SqlDiff
 =====================
 
+SqlDiff-0.1.0
+-------------
+__n/a__
+
+* Use namespaces
+
 SqlDiff-0.0.3
 -------------
 __2011-02-21__

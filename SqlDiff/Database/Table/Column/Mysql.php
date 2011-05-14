@@ -29,8 +29,13 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database\Table\Column;
+
+use SqlDiff\Database\Table\Column;
+use SqlDiff\Database\Table\ColumnInterface;
+
 /**
- * Class representing a MySQL index
+ * Class representing a MySQL column
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -38,20 +43,20 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_Abstract {
+class Mysql extends Column implements ColumnInterface {
     /**
      * Column collation
      *
      * @var string
      */
-    protected $collation = null;
+    private $collation;
 
     /**
      * Character set of the column
      *
      * @var string
      */
-    protected $charset = null;
+    private $charset;
 
     /**
      * Get the collation
@@ -66,7 +71,7 @@ class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_
      * Set the collation
      *
      * @param string $collation
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column\Mysql 
      */
     public function setCollation($collation) {
         $this->collation = $collation;
@@ -87,7 +92,7 @@ class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_
      * Set the charset
      *
      * @param string $charset
-     * @return SqlDiff_Database_Table_Column_Mysql
+     * @return SqlDiff\Database\Table\Column\Mysql 
      */
     public function setCharset($charset) {
         $this->charset= $charset;
@@ -96,9 +101,7 @@ class SqlDiff_Database_Table_Column_Mysql extends SqlDiff_Database_Table_Column_
     }
 
     /**
-     * Get the definition of this column
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getDefinition()
      */
     public function getDefinition() {
         $sql = '`' . $this->getName() . '` ' . $this->getType() . '';

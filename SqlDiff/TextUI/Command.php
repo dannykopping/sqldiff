@@ -29,6 +29,13 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\TextUI;
+
+use SqlDiff\Database;
+use SqlDiff\DatabaseInterface;
+use SqlDiff\Exception;
+use SqlDiff\Version;
+
 /**
  * Main command class
  *
@@ -38,27 +45,27 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_TextUI_Command {
+class Command {
     /**
      * Source file path
      *
      * @var string
      */
-    protected $source = null;
+    private $source;
 
     /**
      * Target file path
      *
      * @var string
      */
-    protected $target = null;
+    private $target;
 
     /**
      * Filter tables
      *
      * @var array
      */
-    protected $filter = array(
+    private $filter = array(
         'include' => array(),
         'exclude' => array(),
     );
@@ -68,7 +75,7 @@ class SqlDiff_TextUI_Command {
      *
      * @var array
      */
-    protected $options = array(
+    private $options = array(
         'help'           => null,
         'version'        => null,
         'version-number' => null,
@@ -85,8 +92,8 @@ class SqlDiff_TextUI_Command {
      *
      * @var array
      */
-    protected $defaults = array(
-        'database-type' => SqlDiff_Database::MYSQL,
+    private $defaults = array(
+        'database-type' => Database::MYSQL,
         'mirror'        => false,
         'only-sql'      => false,
         'colors'        => false,
@@ -97,9 +104,9 @@ class SqlDiff_TextUI_Command {
     /**
      * Formatter used to output text to the terminal
      *
-     * @var SqlDiff_TextUI_Formatter
+     * @var SqlDiff\TextUI\Formatter
      */
-    protected $formatter = null;
+    private $formatter;
 
     /**
      * Write a message
@@ -108,7 +115,7 @@ class SqlDiff_TextUI_Command {
      * @param boolean $exit Wether or not to exit after the message has been written
      * @param int $exitCode The code to exit with
      */
-    protected function writeMessage($message, $exit = false, $exitCode = 0) {
+    private function writeMessage($message, $exit = false, $exitCode = 0) {
         print($message . PHP_EOL);
 
         if ($exit) {
@@ -120,7 +127,7 @@ class SqlDiff_TextUI_Command {
      * The main method called from the sqldiff script
      */
     static public function main() {
-        set_exception_handler('SqlDiff_Exception::handle');
+        set_exception_handler('SqlDiff\\Exception::handle');
 
         $argv = $_SERVER['argv'];
         array_shift($argv);
@@ -136,7 +143,7 @@ class SqlDiff_TextUI_Command {
      *
      * @param array $argv The arguments from the command line
      * @param boolean $exit Set this to false if you don't want the script to be killed
-     * @throws SqlDiff_Exception
+     * @throws SqlDiff\Exception
      */
     public function validateArguments(array $argv = array()) {
         $argc = count($argv);
@@ -163,12 +170,12 @@ class SqlDiff_TextUI_Command {
                     case 'help':
                         $this->writeMessage($this->getHelp(), true);
                     case 'version':
-                        $this->writeMessage(SqlDiff_Version::getVersionString(), true);
+                        $this->writeMessage(Version::getVersionString(), true);
                     case 'version-number':
-                        $this->writeMessage(SqlDiff_Version::getVersionNumber(), true);
+                        $this->writeMessage(Version::getVersionNumber(), true);
                     case 'database-type':
                         if (!isset($argv[++$i])) {
-                            throw new SqlDiff_Exception('--database-type missing argument');
+                            throw new Exception('--database-type missing argument');
                         }
 
                         $this->options[$arg] = $argv[$i];
@@ -176,13 +183,13 @@ class SqlDiff_TextUI_Command {
                     case 'include':
                     case 'exclude':
                         if (!isset($argv[++$i])) {
-                            throw new SqlDiff_Exception('--' . $arg . ' missing argument');
+                            throw new Exception('--' . $arg . ' missing argument');
                         }
 
                         $this->filter[$arg] = array_flip(explode(',', $argv[$i]));
                         break;
                     default:
-                        throw new SqlDiff_Exception('Unknown option: --' . $arg);
+                        throw new Exception('Unknown option: --' . $arg);
                 }
             }
         }
@@ -192,7 +199,7 @@ class SqlDiff_TextUI_Command {
         $this->source = array_pop($argv);
 
         // Create the formatter
-        $this->formatter = new SqlDiff_TextUI_Formatter();
+        $this->formatter = new Formatter();
 
         if ($this->options['colors']) {
             $this->formatter->enable();
@@ -201,7 +208,7 @@ class SqlDiff_TextUI_Command {
         // See if the arguments points to a file
         foreach (array($this->source, $this->target) as $arg) {
             if (!is_readable($arg)) {
-                throw new SqlDiff_Exception('Could not open file for reading: ' . $arg);
+                throw new Exception('Could not open file for reading: ' . $arg);
             }
         }
     }
@@ -211,11 +218,11 @@ class SqlDiff_TextUI_Command {
      *
      * @param string $type The type of the database
      * @param string $filePath The path to the dump file
-     * @return SqlDiff_Database_Abstract
+     * @return SqlDiff\DatabaseInterface
      */
-    protected function getDatabaseObject($type, $filePath) {
+    private function getDatabaseObject($type, $filePath) {
         // Create a new database
-        $database = SqlDiff_Database::factory($type, $this->filter);
+        $database = Database::factory($type, $this->filter);
         $database->setCommand($this)
                  ->parseDump($filePath, $this->filter);
 
@@ -254,7 +261,7 @@ class SqlDiff_TextUI_Command {
             if ($this->options['only-sql']) {
                 $output = $queries;
             } else {
-                $output = SqlDiff_Version::getVersionString() . PHP_EOL .
+                $output = Version::getVersionString() . PHP_EOL .
                           $prepend . PHP_EOL .
                           str_repeat('=', 80) . PHP_EOL .
                           $queries . PHP_EOL .
@@ -270,32 +277,32 @@ class SqlDiff_TextUI_Command {
     /**
      * Method to return the queries needed to update <target> to be like the <source> database
      *
-     * @param SqlDiff_Database_Abstract $source The source database
-     * @param SqlDiff_Database_Abstract $target The target database
+     * @param SqlDiff\DatabaseInterface $source The source database
+     * @param SqlDiff\DatabaseInterface $target The target database
      * @return array Returns an array of formatted queries
      */
-    protected function getDiffQueries($source, $target) {
+    private function getDiffQueries($source, $target) {
         $queries = array();
 
         foreach ($source->getTables() as $tableName => $sourceTable) {
             if (!$target->hasTable($sourceTable)) {
-                $queries[] = $this->formatter->format($sourceTable->getCreateTableSql(), SqlDiff_TextUI_Formatter::ADD);
+                $queries[] = $this->formatter->format($sourceTable->getCreateTableSql(), Formatter::ADD);
             } else if ($sourceTable->getCreateTableSql() !== $target->getTable($tableName)->getCreateTableSql()) {
                 $targetTable = $target->getTable($tableName);
 
                 foreach ($sourceTable->getColumns() as $columnName => $column) {
                     if (!$targetTable->hasColumn($column)) {
-                        $queries[] = $this->formatter->format($targetTable->getAddColumnSql($column), SqlDiff_TextUI_Formatter::ADD);
+                        $queries[] = $this->formatter->format($targetTable->getAddColumnSql($column), Formatter::ADD);
                     } else if ((string) $column !== (string) $targetTable->getColumn($columnName)) {
-                        $queries[] = $this->formatter->format($targetTable->getChangeColumnSql($column), SqlDiff_TextUI_Formatter::CHANGE);
+                        $queries[] = $this->formatter->format($targetTable->getChangeColumnSql($column), Formatter::CHANGE);
                     }
                 }
 
                 foreach ($sourceTable->getIndexes() as $indexName => $index) {
                     if (!$targetTable->hasIndex($index)) {
-                        $queries[] = $this->formatter->format($targetTable->getAddIndexSql($index), SqlDiff_TextUI_Formatter::ADD);
+                        $queries[] = $this->formatter->format($targetTable->getAddIndexSql($index), Formatter::ADD);
                     } else if ((string) $index !== (string) $targetTable->getIndex($indexName)) {
-                        $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), SqlDiff_TextUI_Formatter::CHANGE);
+                        $queries[] = $this->formatter->format($targetTable->getChangeIndexSql($index), Formatter::CHANGE);
                     }
                 }
 
@@ -310,28 +317,28 @@ class SqlDiff_TextUI_Command {
      * Generate queries that drops fields and indexes from target that does not exist in the source
      * database
      *
-     * @param SqlDiff_Database_Abstract $target The target database
-     * @param SqlDiff_Database_Abstract $source The source database
+     * @param SqlDiff\DatabaseInterface $target The target database
+     * @param SqlDiff\DatabaseInterface $source The source database
      * @return array An array of formatted queries
      */
-    protected function getMirrorQueries($target, $source) {
+    private function getMirrorQueries($target, $source) {
         $queries = array();
 
         foreach ($target->getTables() as $tableName => $targetTable) {
             if (!$source->hasTable($targetTable)) {
-                $queries[] = $this->formatter->format($targetTable->getDropTableSql(), SqlDiff_TextUI_Formatter::DELETE);
+                $queries[] = $this->formatter->format($targetTable->getDropTableSql(), Formatter::DELETE);
             } else if ($targetTable->getCreateTableSql() !== $source->getTable($tableName)->getCreateTableSql()) {
                 $sourceTable = $source->getTable($tableName);
 
                 foreach ($targetTable->getIndexes() as $indexName => $index) {
                     if (!$sourceTable->hasIndex($index)) {
-                        $queries[] = $this->formatter->format($targetTable->getDropIndexSql($index), SqlDiff_TextUI_Formatter::DELETE);
+                        $queries[] = $this->formatter->format($targetTable->getDropIndexSql($index), Formatter::DELETE);
                     }
                 }
 
                 foreach ($targetTable->getColumns() as $columnName => $column) {
                     if (!$sourceTable->hasColumn($column)) {
-                        $queries[] = $this->formatter->format($targetTable->getDropColumnSql($column), SqlDiff_TextUI_Formatter::DELETE);
+                        $queries[] = $this->formatter->format($targetTable->getDropColumnSql($column), Formatter::DELETE);
                     }
                 }
             }
@@ -344,7 +351,7 @@ class SqlDiff_TextUI_Command {
      * Display the help text
      */
     public function getHelp() {
-        return SqlDiff_Version::getVersionString() . '
+        return Version::getVersionString() . '
 Usage: sqldiff [options] <source> <target>
 
   where <source> and <target> are paths to files containing the structure of a
@@ -387,10 +394,10 @@ Options:
     /**
      * Set the formatter
      *
-     * @param SqlDiff_TextUI_Formatter $formatter
-     * @return SqlDiff_TextUI_Command
+     * @param SqlDiff\TextUI\Formatter $formatter
+     * @return SqlDiff\TextUI\Command
      */
-    public function setFormatter(SqlDiff_TextUI_Formatter $formatter) {
+    public function setFormatter(Formatter $formatter) {
         $this->formatter = $formatter;
 
         return $this;
@@ -399,7 +406,7 @@ Options:
     /**
      * Get the formatter
      *
-     * @return SqlDiff_TextUI_Formatter
+     * @return SqlDiff\TextUI\Formatter
      */
     public function getFormatter() {
         return $this->formatter;

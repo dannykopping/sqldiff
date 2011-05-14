@@ -29,44 +29,30 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff;
+/** @see SqlDiff\Autoload */
+require __DIR__ . '/../SqlDiff/Autoload.php';
 
-/**
- * Class representing a MySQL index
- *
- * @package SqlDiff
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011, Christer Edvartsen
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/sqldiff
- */
-class Version {
-    /**
-     * The current version
-     *
-     * @var string
-     */
-    static protected $id = '@package_version@';
+set_include_path(
+    get_include_path() . PATH_SEPARATOR .
+    __DIR__
+);
 
-    /**
-     * Get the version number only
-     *
-     * @return string
-     */
-    static public function getVersionNumber() {
-        if (strpos(static::$id, '@package_version') === 0) {
-            return 'dev';
+// Autoloader for namespaced classes in the include_path
+spl_autoload_register(function($className) {
+    $filename = str_replace('\\', '/', $className) . '.php';
+
+    foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+        $absPath = rtrim($path, '/') . '/' . $filename;
+
+        if (is_file($absPath)) {
+            require $absPath;
+            return true;
         }
-
-        return static::$id;
     }
+});
 
-    /**
-     * Get the version string
-     *
-     * @return string
-     */
-    static public function getVersionString() {
-        return 'SqlDiff-' . static::getVersionNumber() . ' by Christer Edvartsen.' . PHP_EOL;
-    }
-}
+/** \Mockery\Loader */
+require_once 'Mockery/Loader.php';
+
+$loader = new \Mockery\Loader();
+$loader->register();

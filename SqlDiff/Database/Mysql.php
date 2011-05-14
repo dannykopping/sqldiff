@@ -29,8 +29,17 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff\Database;
+
+use SqlDiff\Exception;
+use SqlDiff\Database;
+use SqlDiff\DatabaseInterface;
+use SqlDiff\Database\Table\Mysql as MysqlTable;
+use SqlDiff\Database\Table\Column\Mysql as MysqlColumn;
+use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
+
 /**
- * Class representing a MySQL index
+ * Class representing a MySQL database
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -38,14 +47,14 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
+class Mysql extends Database implements DatabaseInterface {
     /**
      * Populate the database related metadata
      *
-     * @param SimpleXMLElement $xml The root element of the dump file
+     * @param \SimpleXMLElement $xml The root element of the dump file
      * @param array $filter Filter to use when including/excluding tables
      */
-    public function populateDatabase(SimpleXMLElement $xml, array $filter) {
+    public function populateDatabase(\SimpleXMLElement $xml, array $filter) {
         // Set name of the database
         $this->setName((string) $xml->database['name']);
 
@@ -67,11 +76,11 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
     /**
      * Create a table object
      *
-     * @param SimpleXMLElement $xml A node describing a single table
-     * @return SqlDiff_Database_Table_Mysql A new table object
+     * @param \SimpleXMLElement $xml A node describing a single table
+     * @return SqlDiff\Database\Table\Mysql A new table object
      */
-    public function createTable(SimpleXMLElement $xml) {
-        $table = new SqlDiff_Database_Table_Mysql();
+    public function createTable(\SimpleXMLElement $xml) {
+        $table = new MysqlTable();
 
         $table->setName((string) $xml['name'])
               ->setEngine((string) $xml->options['Engine'])
@@ -101,11 +110,11 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
     /**
      * Create a table field
      *
-     * @param SimpleXMLElement $xml A node describing a single field
-     * @return SqlDiff_Database_Table_Column_Mysql A new field object
+     * @param \SimpleXMLElement $xml A node describing a single field
+     * @return SqlDiff\Database\Table\Column\Mysql A new field object
      */
-    public function createTableField(SimpleXMLElement $xml) {
-        $field = new SqlDiff_Database_Table_Column_Mysql();
+    public function createTableField(\SimpleXMLElement $xml) {
+        $field = new MysqlColumn();
 
         $field->setName((string) $xml['Field'])
               ->setType((string) $xml['Type'])
@@ -126,12 +135,12 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
      * to make sure we don't add them all. Therefore this method can return false if the table
      * instance already has an index with the same name as the one currently being created.
      *
-     * @param SimpleXMLElement $xml A node describing a single key
-     * @param SqlDiff_Database_Table_Mysql $table The table this key will be added to
-     * @return SqlDiff_Database_Table_Index_Mysql|boolean Returns a key instance or false if the
+     * @param \SimpleXMLElement $xml A node describing a single key
+     * @param SqlDiff\Database\Table\Mysql $table The table this key will be added to
+     * @return SqlDiff\Database\Table\Index\Mysql|boolean Returns a key instance or false if the
      *                                                    key already exists
      */
-    public function createTableKey(SimpleXMLElement $xml, SqlDiff_Database_Table_Mysql $table) {
+    public function createTableKey(\SimpleXMLElement $xml, MysqlTable $table) {
         // Fetch the keys already attached to the table this key might be added to
         $keys    = $table->getIndexes();
         $keyName = (string) $xml['Key_name'];
@@ -146,29 +155,24 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
             return false;
         }
 
-        $key = new SqlDiff_Database_Table_Index_Mysql();
+        $key = new MysqlIndex();
         $key->setName($keyName)
             ->addField($field);
 
         // Set the correct key type
         if ($keyName === 'PRIMARY') {
-            $key->setType(SqlDiff_Database_Table_Index_Mysql::PRIMARY_KEY);
+            $key->setType(MysqlIndex::PRIMARY_KEY);
         } else if ((string) $xml['Non_unique'] === '0') {
-            $key->setType(SqlDiff_Database_Table_Index_Mysql::UNIQUE);
+            $key->setType(MysqlIndex::UNIQUE);
         } else {
-            $key->setType(SqlDiff_Database_Table_Index_Mysql::KEY);
+            $key->setType(MysqlIndex::KEY);
         }
 
         return $key;
     }
 
     /**
-     * Parse a dump file
-     *
-     * @param string $filePath Path to the dump file
-     * @param array $filter Array with 'include' and 'exclude' keys that both are arrays of tables
-     *                      to include/exclude
-     * @throws SqlDiff_Exception
+     * @see SqlDiff\DatabaseInterface::parseDump()
      */
     public function parseDump($filePath, array $filter) {
         // Clear the error buffer and Suppress errors
@@ -178,11 +182,11 @@ class SqlDiff_Database_Mysql extends SqlDiff_Database_Abstract {
         $xml = simplexml_load_file($filePath);
 
         if (!$xml) {
-            throw new SqlDiff_Exception('According to SimpleXML ' . $filePath . ' is not a valid XML file.');
+            throw new Exception('According to SimpleXML ' . $filePath . ' is not a valid XML file.');
         }
 
         if ($xml->getName() !== 'mysqldump') {
-            throw new SqlDiff_Exception('The XML file does not seem to come from mysqldump.');
+            throw new Exception('The XML file does not seem to come from mysqldump.');
         }
 
         // Add tables, fields and keys to this instance

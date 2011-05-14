@@ -29,6 +29,8 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
+namespace SqlDiff;
+
 /**
  * Autoloader used by SqlDiff
  *
@@ -38,27 +40,30 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class SqlDiff_Autoload {
+class Autoload {
     /**
      * SqlDiff classes
      *
      * @var array
      */
     static public $classes = array(
-        'sqldiff_autoload' => '/Autoload.php',
-        'sqldiff_database' => '/Database.php',
-        'sqldiff_database_abstract' => '/Database/Abstract.php',
-        'sqldiff_database_mysql' => '/Database/Mysql.php',
-        'sqldiff_database_table_abstract' => '/Database/Table/Abstract.php',
-        'sqldiff_database_table_column_abstract' => '/Database/Table/Column/Abstract.php',
-        'sqldiff_database_table_column_mysql' => '/Database/Table/Column/Mysql.php',
-        'sqldiff_database_table_index_abstract' => '/Database/Table/Index/Abstract.php',
-        'sqldiff_database_table_index_mysql' => '/Database/Table/Index/Mysql.php',
-        'sqldiff_database_table_mysql' => '/Database/Table/Mysql.php',
-        'sqldiff_exception' => '/Exception.php',
-        'sqldiff_textui_command' => '/TextUI/Command.php',
-        'sqldiff_textui_formatter' => '/TextUI/Formatter.php',
-        'sqldiff_version' => '/Version.php'
+        'sqldiff\\autoload' => '/Autoload.php',
+        'sqldiff\\database' => '/Database.php',
+        'sqldiff\\database\\mysql' => '/Database/Mysql.php',
+        'sqldiff\\database\\table' => '/Database/Table.php',
+        'sqldiff\\database\\table\\column' => '/Database/Table/Column.php',
+        'sqldiff\\database\\table\\column\\mysql' => '/Database/Table/Column/Mysql.php',
+        'sqldiff\\database\\table\\columninterface' => '/Database/Table/ColumnInterface.php',
+        'sqldiff\\database\\table\\index' => '/Database/Table/Index.php',
+        'sqldiff\\database\\table\\index\\mysql' => '/Database/Table/Index/Mysql.php',
+        'sqldiff\\database\\table\\indexinterface' => '/Database/Table/IndexInterface.php',
+        'sqldiff\\database\\table\\mysql' => '/Database/Table/Mysql.php',
+        'sqldiff\\database\\tableinterface' => '/Database/TableInterface.php',
+        'sqldiff\\databaseinterface' => '/DatabaseInterface.php',
+        'sqldiff\\exception' => '/Exception.php',
+        'sqldiff\\textui\\command' => '/TextUI/Command.php',
+        'sqldiff\\textui\\formatter' => '/TextUI/Formatter.php',
+        'sqldiff\\version' => '/Version.php'
     );
 
     /**
@@ -75,4 +80,4 @@ class SqlDiff_Autoload {
     }
 }
 
-spl_autoload_register('SqlDiff_Autoload::load');
+spl_autoload_register('SqlDiff\\Autoload::load');
