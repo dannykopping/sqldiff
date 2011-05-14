@@ -81,7 +81,7 @@ class Mysql extends Index implements IndexInterface {
                 throw new Exception('Unknown index type: ' . $type);
         }
 
-        $this->type = $type;
+        parent::setType($type);
 
         return $this;
     }
