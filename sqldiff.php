@@ -31,6 +31,6 @@
  */
 
 /** @see SqlDiff\Autoload */
-require 'SqlDiff\Autoload.php';
+require 'SqlDiff/Autoload.php';
 
 SqlDiff\TextUI\Command::main();
