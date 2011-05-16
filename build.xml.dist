@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="SqlDiff" default="build" basedir=".">
-    <!-- Set the source property to the source code directory (relative to this file) -->
+    <!-- Set the source and build properties (relative to directory of this file) -->
     <property name="source" value="SqlDiff" />
     <property name="build" value="${basedir}/build" />
 
