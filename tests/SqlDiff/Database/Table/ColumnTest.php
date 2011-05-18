@@ -30,6 +30,7 @@
  */
 
 namespace SqlDiff\Database\Table;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -134,13 +135,6 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
         $attribute = 'unsigned';
         $this->col->setAttribute($attribute);
         $this->assertSame($attribute, $this->col->getAttribute());
-    }
-
-    /**
-     * Test the magic to string method
-     */
-    public function testMagicToStringMethod() {
-        $this->assertSame((string) $this->col, $this->col->getDefinition());
     }
 }
 

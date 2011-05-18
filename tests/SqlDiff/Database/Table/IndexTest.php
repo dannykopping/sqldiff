@@ -77,23 +77,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase {
         $this->index->setType($type);
         $this->assertSame($type, $this->index->getType());
     }
-
-    public function testSetGetFields() {
-        $cols = array(
-            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
-            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
-            $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface'),
-        );
-        $this->index->setFields($cols);
-        $this->assertSame($cols, $this->index->getFields());
-    }
-
-    /**
-     * Test the magic to string method
-     */
-    public function testMagicToStringMethod() {
-        $this->assertSame((string) $this->index, $this->index->getDefinition());
-    }
 }
 
 class IndexStub extends Index {
