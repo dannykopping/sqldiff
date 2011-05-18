@@ -14,6 +14,15 @@
         <mkdir dir="${build}/pdepend" />
     </target>
 
+    <target name="phpab">
+        <exec executable="phpab" description="Generate Autoloader.php using phpab based on all classes in the source directory">
+            <arg line="-o ${source}/Autoload.php 
+                       -t ${source}/Autoload.php.in 
+                       --indent '        ' 
+                       ${source}" />
+        </exec>
+    </target>
+
     <target name="phpunit" description="Runs unit tests using PHPUnit. Configration is in phpunit.xml">
         <exec executable="phpunit" failonerror="true" />
     </target>
@@ -73,5 +82,5 @@
         </exec>
     </target>
 
-    <target name="build" depends="clean,parallelTasks,phpunit,phpcb" />
+    <target name="build" depends="clean,phpab,parallelTasks,phpunit,phpcb" />
 </project>
