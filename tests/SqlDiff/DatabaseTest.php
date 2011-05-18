@@ -31,8 +31,6 @@
 
 namespace SqlDiff;
 
-use \Mockery as m;
-
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -52,7 +50,7 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      * Set up method
      */
     public function setUp() {
-        $this->db = new Database();
+        $this->db = new DatabaseStub();
     }
 
     /**
@@ -60,7 +58,6 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      */
     public function tearDown() {
         $this->db = null;
-        m::close();
     }
 
     /**
@@ -84,9 +81,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      * Add some tables, then check the getNumTables method
      */
     public function testAddTableThenGetNumTables() {
-        $table = m::mock('SqlDiff\\Database\\TableInterface');
-        $table->shouldReceive('setDatabase')->once()->with($this->db);
-        $table->shouldReceive('getName')->times(2)->andReturn('tableName');
+        $table = $this->getMock('SqlDiff\\Database\\TableInterface');
+        $table->expects($this->once())->method('setDatabase')->with($this->db);
+        $table->expects($this->exactly(2))->method('getName')->will($this->returnValue('tableName'));
+
         $this->db->addTable($table);
         $this->assertSame(1, $this->db->getNumTables(), 'Expected 1 table, got ' . $this->db->getNumTables());
         $this->db->removeTable($table);
@@ -97,9 +95,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      * Try to remove a table using its name as argument to the removeTable method
      */
     public function testRemoveTableUsingNameAsArgument() {
-        $table = m::mock('SqlDiff\\Database\\TableInterface');
-        $table->shouldReceive('getName')->once()->andReturn('TableName');
-        $table->shouldReceive('setDatabase')->once()->with($this->db);
+        $table = $this->getMock('SqlDiff\\Database\\TableInterface');
+        $table->expects($this->once())->method('getName')->will($this->returnValue('TableName'));
+        $table->expects($this->once())->method('setDatabase')->with($this->db);
+
         $this->db->addTable($table);
         $this->assertSame(1, $this->db->getNumTables(), 'Expected 1 table, got ' . $this->db->getNumTables());
         $this->db->removeTable('TableName');
@@ -111,9 +110,9 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      */
     public function testHasTable() {
         $tableName = 'Name';
-        $table = m::mock('SqlDiff\\Database\\TableInterface');
-        $table->shouldReceive('setDatabase')->once()->with($this->db);
-        $table->shouldReceive('getName')->times(3)->andReturn($tableName);
+        $table = $this->getMock('SqlDiff\\Database\\TableInterface');
+        $table->expects($this->once())->method('setDatabase')->with($this->isInstanceOf('SqlDiff\\DatabaseInterface'));
+        $table->expects($this->exactly(3))->method('getName')->will($this->returnValue($tableName));
 
         $this->assertFalse($this->db->hasTable($tableName));
         $this->assertFalse($this->db->hasTable($table));
@@ -129,10 +128,10 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      */
     public function testAddAndGetTable() {
         $tableName = 'Name';
-        $table = m::mock('SqlDiff\\Database\\TableInterface');
-        $table->shouldReceive('setDatabase')->once()->with($this->db);
-        $table->shouldReceive('getName')->once()->andReturn($tableName);
-        
+        $table = $this->getMock('SqlDiff\\Database\\TableInterface');
+        $table->expects($this->once())->method('setDatabase')->with($this->isInstanceOf('SqlDiff\\DatabaseInterface'));
+        $table->expects($this->once())->method('getName')->will($this->returnValue($tableName));
+
         $this->db->addTable($table);
 
         $this->assertSame($table, $this->db->getTable($tableName));
@@ -164,6 +163,12 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase {
      */
     public function testFactory() {
         $db = Database::factory(Database::MYSQL);
-        $this->assertInstanceOf('SqlDiff\\Database\\Mysql', $db);
+        $this->assertInstanceOf('SqlDiff\\Mysql\\Database', $db);
+    }
+}
+
+class DatabaseStub extends Database implements DatabaseInterface {
+    public function parseDump($filePath, array $filter) {
+
     }
 }
