@@ -31,6 +31,9 @@
 
 namespace SqlDiff\Database\Table;
 
+use SqlDiff\Database\TableInterface;
+use SqlDiff\Database\Table\ColumnInterface;
+
 /**
  * Interface for table indexes
  *
@@ -47,4 +50,72 @@ interface IndexInterface {
      * @return string
      */
     function getDefinition();
+    
+    /**
+     * Get the table this index belongs to
+     *
+     * @return SqlDiff\Database\TableInterface 
+     */
+    function getTable();
+
+    /**
+     * Set the table this index belongs to
+     *
+     * @param SqlDiff\Database\TableInterface $table
+     * @return SqlDiff\Database\Table\Index 
+     */
+    function setTable(TableInterface $table);
+
+    /**
+     * Get the name of the index
+     *
+     * @return string
+     */
+    function getName();
+
+    /**
+     * Set the name of the index
+     *
+     * @param string $name
+     * @return SqlDiff\Database\Table\IndexInterface
+     */
+    function setName($name);
+
+    /**
+     * Get the type of the index 
+     *
+     * @return string
+     */
+    function getType();
+
+    /**
+     * Set the type of the index
+     *
+     * @param string $type
+     * @return SqlDiff\Database\Table\IndexInterface
+     */
+    function setType($type);
+
+    /**
+     * Get the fields this index covers
+     *
+     * @return array 
+     */
+    function getFields();
+
+    /**
+     * Add a single field to the index
+     *
+     * @param SqlDiff\Database\Table\ColumnInterface $field
+     * @return SqlDiff\Database\Table\IndexInterface
+     */
+    function addField(ColumnInterface $field);
+
+    /**
+     * Add several fields to the index
+     *
+     * @param array $fields Array of SqlDiff\Database\Table\ColumnInterface objects
+     * @return SqlDiff\Database\Table\IndexInterface
+     */
+    function addFields(array $fields);
 }

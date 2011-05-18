@@ -29,7 +29,7 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database;
+namespace SqlDiff\Mysql;
 
 /**
  * @package SqlDiff
@@ -38,11 +38,11 @@ namespace SqlDiff\Database;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class MysqlTest extends \PHPUnit_Framework_TestCase {
+class DatabaseTest extends \PHPUnit_Framework_TestCase {
     /**
      * Database instance
      *
-     * @var SqlDiff\Database\Mysql
+     * @var SqlDiff\Mysql\Database
      */
     private $database;
 
@@ -50,7 +50,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase {
      * Setup method
      */
     public function setUp() {
-        $this->database = new Mysql();
+        $this->database = new Database();
     }
 
     /**

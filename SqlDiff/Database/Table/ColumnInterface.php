@@ -23,6 +23,7 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpacakge Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -31,10 +32,13 @@
 
 namespace SqlDiff\Database\Table;
 
+use SqlDiff\Database\TableInterface;
+
 /**
  * Interface for a table column
  *
  * @package SqlDiff
+ * @subpacakge Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -47,4 +51,145 @@ interface ColumnInterface {
      * @return string
      */
     function getDefinition();
+    
+    /**
+     * Set the table instance
+     *
+     * @param SqlDiff\Database\TableInterface $table
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setTable(TableInterface $table);
+        
+    /**
+     * Get the table instance
+     *
+     * @return SqlDiff\Database\TableInterface
+     */
+    function getTable();
+
+    /**
+     * Set the type
+     *
+     * @param string $type
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setType($type);
+
+    /**
+     * Get the type attribute
+     *
+     * @return string
+     */
+    function getType();
+
+    /**
+     * Set the attribute
+     *
+     * @param string $attribute
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setAttribute($attribute);
+
+    /**
+     * Get the attribute
+     *
+     * @return string
+     */
+    function getAttribute();
+
+    /**
+     * Get the not null flag
+     *
+     * @return string
+     */
+    function getNotNull();
+
+    /**
+     * Set the not null flag
+     *
+     * @param boolean $flag
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setNotNull($flag);
+
+    /**
+     * Get the default value
+     *
+     * @return string
+     */
+    function getDefault();
+
+    /**
+     * Set the default value
+     *
+     * @param string $default
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setDefault($default);
+
+    /**
+     * Get the auto increment flag
+     *
+     * @return boolean
+     */
+    function getAutoIncrement();
+
+    /**
+     * Set the auto increment flag
+     *
+     * @param boolean $flag
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setAutoIncrement($flag);
+
+    /**
+     * Get the column name
+     *
+     * @return string
+     */
+    function getName();
+
+    /**
+     * Set the column name
+     *
+     * @param string $name
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setName($name);
+
+    /**
+     * Get the key
+     *
+     * @return string
+     */
+    function getKey();
+
+    /**
+     * Set the key
+     *
+     * @param string $key
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setKey($key);
+
+    /**
+     * Get the position of this column in the current table
+     *
+     * @return int
+     */
+    function getPosition();
+
+    /**
+     * Get the previous column (if it exists)
+     *
+     * @return SqlDiff\Database\Table\ColumnInterface|null
+     */
+    function getPreviousColumn();
+
+    /**
+     * Get the next column (if it exists)
+     *
+     * @return SqlDiff\Database\Table\ColumnInterface|null
+     */
+    function getNextColumn();
 }

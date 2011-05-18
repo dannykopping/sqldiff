@@ -23,27 +23,29 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpacakge Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database\Table\Column;
+namespace SqlDiff\Mysql;
 
-use SqlDiff\Database\Table\Column;
+use SqlDiff\Database\Table\Column as AbstractColumn;
 use SqlDiff\Database\Table\ColumnInterface;
 
 /**
  * Class representing a MySQL column
  *
  * @package SqlDiff
+ * @subpacakge Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Mysql extends Column implements ColumnInterface {
+class Column extends AbstractColumn implements ColumnInterface {
     /**
      * Column collation
      *
@@ -71,7 +73,7 @@ class Mysql extends Column implements ColumnInterface {
      * Set the collation
      *
      * @param string $collation
-     * @return SqlDiff\Database\Table\Column\Mysql 
+     * @return SqlDiff\Mysql\Column 
      */
     public function setCollation($collation) {
         $this->collation = $collation;
@@ -92,7 +94,7 @@ class Mysql extends Column implements ColumnInterface {
      * Set the charset
      *
      * @param string $charset
-     * @return SqlDiff\Database\Table\Column\Mysql 
+     * @return SqlDiff\Mysql\Column 
      */
     public function setCharset($charset) {
         $this->charset= $charset;

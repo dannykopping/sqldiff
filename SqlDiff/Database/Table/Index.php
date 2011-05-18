@@ -46,7 +46,7 @@ abstract class Index {
     /**
      * The table this index belongs to
      *
-     * @var SqlDiff\Database\TableInterface 
+     * @var SqlDiff\Database\TableInterface
      */
     private $table;
 
@@ -72,19 +72,14 @@ abstract class Index {
     private $fields = array();
 
     /**
-     * Get the table attribute
-     *
-     * @return SqlDiff\Database\TableInterface 
+     * @see SqlDiff\Database\Table\IndexInterface::getTable()
      */
     public function getTable() {
         return $this->table;
     }
 
     /**
-     * Set the table attribute
-     *
-     * @param SqlDiff\Database\TableInterface $table
-     * @return SqlDiff\Database\Table\Index 
+     * @see SqlDiff\Database\Table\IndexInterface::setTable()
      */
     public function setTable(TableInterface $table) {
         $this->table = $table;
@@ -93,19 +88,14 @@ abstract class Index {
     }
 
     /**
-     * Get the name attribute
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\IndexInterface::getName()
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Set the name attribute
-     *
-     * @param string $name
-     * @return SqlDiff\Database\Table\Index 
+     * @see SqlDiff\Database\Table\IndexInterface::setName()
      */
     public function setName($name) {
         $this->name = $name;
@@ -114,19 +104,14 @@ abstract class Index {
     }
 
     /**
-     * Get the type attribute
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\IndexInterface::getType()
      */
     public function getType() {
         return $this->type;
     }
 
     /**
-     * Set the type attribute
-     *
-     * @param string $type
-     * @return SqlDiff\Database\Table\Index 
+     * @see SqlDiff\Database\Table\IndexInterface::setType()
      */
     public function setType($type) {
         $this->type = $type;
@@ -135,31 +120,14 @@ abstract class Index {
     }
 
     /**
-     * Get the fields attribute
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\IndexInterface::getFields()
      */
     public function getFields() {
         return $this->fields;
     }
 
     /**
-     * Set the fields attribute
-     *
-     * @param string $fields
-     * @return SqlDiff\Database\Table\Index 
-     */
-    public function setFields(array $fields) {
-        $this->fields = $fields;
-
-        return $this;
-    }
-
-    /**
-     * Add a single field
-     *
-     * @param SqlDiff\Database\Table\ColumnInterface $field
-     * @return SqlDiff\Database\Table\Index 
+     * @see SqlDiff\Database\Table\IndexInterface::addField()
      */
     public function addField(ColumnInterface $field) {
         $this->fields[] = $field;
@@ -168,10 +136,7 @@ abstract class Index {
     }
 
     /**
-     * Add several fields
-     *
-     * @param array $fields Array of SqlDiff\Database\Table\ColumnInterface objects
-     * @return SqlDiff\Database\Table\Index 
+     * @see SqlDiff\Database\Table\IndexInterface::addFields()
      */
     public function addFields(array $fields) {
         foreach ($fields as $field) {
@@ -179,14 +144,5 @@ abstract class Index {
         }
 
         return $this;
-    }
-
-    /**
-     * The magic to string method is a proxy to the implemention of getDefinition
-     *
-     * @return string
-     */
-    public function __toString() {
-        return $this->getDefinition();
     }
 }

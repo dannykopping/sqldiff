@@ -49,7 +49,7 @@ abstract class Table {
     /**
      * The database object this table belongs to
      *
-     * @var Database 
+     * @var Database
      */
     private $database;
 
@@ -96,10 +96,7 @@ abstract class Table {
     private $columnPositions = array();
 
     /**
-     * Set the database object
-     *
-     * @param SqlDiff\DatabaseInterface $database
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::setDatabase()
      */
     public function setDatabase(DatabaseInterface $database) {
         $this->database = $database;
@@ -108,46 +105,35 @@ abstract class Table {
     }
 
     /**
-     * Get the database object
-     *
-     * @return SqlDiff\DatabaseInterface 
+     * @see SqlDiff\Database\TableInterface::getDatabase()
      */
     public function getDatabase() {
         return $this->database;
     }
 
     /**
-     * Get the number of columns
-     *
-     * @return int
+     * @see SqlDiff\Database\TableInterface::getNumColumns()
      */
     public function getNumColumns() {
         return count($this->columns);
     }
 
     /**
-     * Get the number of indexes
-     *
-     * @return int
+     * @see SqlDiff\Database\TableInterface::getNumIndexes()
      */
     public function getNumIndexes() {
         return count($this->indexes);
     }
 
     /**
-     * Get the name
-     *
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getName()
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Set the name
-     *
-     * @param string $name
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::setName()
      */
     public function setName($name) {
         $this->name = $name;
@@ -156,19 +142,14 @@ abstract class Table {
     }
 
     /**
-     * Get the table comment
-     *
-     * @return string
+     * @see SqlDiff\Database\TableInterface::getComment()
      */
     public function getComment() {
         return $this->comment;
     }
 
     /**
-     * Set a table comment
-     *
-     * @param string $comment
-     * @return SqlDiff\Database\Table
+     * @see SqlDiff\Database\TableInterface::setComment()
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -177,10 +158,7 @@ abstract class Table {
     }
 
     /**
-     * Add a column
-     *
-     * @param SqlDiff\Database\Table\ColumnInterface $column
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::addColumn()
      */
     public function addColumn(ColumnInterface $column) {
         $column->setTable($this);
@@ -192,10 +170,7 @@ abstract class Table {
     }
 
     /**
-     * Get a column based on a position
-     *
-     * @param int $position The position to fetch (0-based index)
-     * @return SqlDiff\Database\Table\ColumnIntterface|null
+     * @see SqlDiff\Database\TableInterface::getColumnByPosition()
      */
     public function getColumnByPosition($position) {
         if (!isset($this->columnPositions[$position]) || !isset($this->columns[$this->columnPositions[$position]])) {
@@ -206,11 +181,7 @@ abstract class Table {
     }
 
     /**
-     * Get the position of the column (0-based index)
-     *
-     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
-     *                                                              column object
-     * @return int|null
+     * @see SqlDiff\Database\TableInterface::getColumnPosition()
      */
     public function getColumnPosition($column) {
         if ($column instanceof ColumnInterface) {
@@ -223,10 +194,7 @@ abstract class Table {
     }
 
     /**
-     * Add an array of columns
-     *
-     * @param array $columns An array of SqlDiff\Database\Table\ColumnInterface objects
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::addColumn()
      */
     public function addColumns(array $columns) {
         foreach ($columns as $column) {
@@ -237,11 +205,7 @@ abstract class Table {
     }
 
     /**
-     * Remove a column
-     *
-     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
-     *                                                              column object
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::removeColumn()
      */
     public function removeColumn($column) {
         if ($column instanceof ColumnInterface) {
@@ -260,19 +224,14 @@ abstract class Table {
     }
 
     /**
-     * Fetch all columns
-     *
-     * @return array An array of SqlDiff\Database\Table\ColumnInterface objects
+     * @see SqlDiff\Database\TableInterface::getColumns()
      */
     public function getColumns() {
         return $this->columns;
     }
 
     /**
-     * Fetch a single column
-     *
-     * @param string $name
-     * @return null|SqlDiff\Database\Table\ColumnInterface 
+     * @see SqlDiff\Database\TableInterface::getColumn()
      */
     public function getColumn($name) {
         if (empty($this->columns[$name])) {
@@ -284,11 +243,7 @@ abstract class Table {
 
 
     /**
-     * See if this table has a specific column
-     *
-     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
-     *                                                              column object
-     * @return boolean
+     * @see SqlDiff\Database\TableInterface::hasColumn()
      */
     public function hasColumn($column) {
         if ($column instanceof ColumnInterface) {
@@ -299,10 +254,7 @@ abstract class Table {
     }
 
     /**
-     * Add an index
-     *
-     * @param SqlDiff\Database\Table\IndexInterface $index
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::addIndex()
      */
     public function addIndex(IndexInterface $index) {
         $index->setTable($this);
@@ -318,10 +270,7 @@ abstract class Table {
     }
 
     /**
-     * Add indexes
-     *
-     * @param array $indexes An array of SqlDiff_Database_Table_Index_Abstract objects
-     * @return SqlDiff_Database_Table_Abstract
+     * @see SqlDiff\Database\TableInterface::addIndexes()
      */
     public function addIndexes(array $indexes) {
         foreach ($indexes as $index) {
@@ -332,11 +281,7 @@ abstract class Table {
     }
 
     /**
-     * Remove an index
-     *
-     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
-     *                                                            index object
-     * @return SqlDiff\Database\Table 
+     * @see SqlDiff\Database\TableInterface::removeIndex()
      */
     public function removeIndex($index) {
         if ($index instanceof IndexInterface) {
@@ -349,19 +294,14 @@ abstract class Table {
     }
 
     /**
-     * Get all indexes
-     *
-     * @return array Returns an array of SqlDiff\Database\Table\IndexInterface objects
+     * @see SqlDiff\Database\TableInterface::getIndexes()
      */
     public function getIndexes() {
         return $this->indexes;
     }
 
     /**
-     * Fetch a single index
-     *
-     * @param string $index
-     * @return null|SqlDiff\Database\Table
+     * @see SqlDiff\Database\TableInterface::getIndex()
      */
     public function getIndex($index) {
         if (empty($this->indexes[$index])) {
@@ -372,11 +312,7 @@ abstract class Table {
     }
 
     /**
-     * See if this table has a specific index
-     *
-     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
-     *                                                            index object
-     * @return boolean
+     * @see SqlDiff\Database\TableInterface::hasIndex()
      */
     public function hasIndex($index) {
         if ($index instanceof IndexInterface) {

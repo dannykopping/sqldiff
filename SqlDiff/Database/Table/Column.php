@@ -46,7 +46,7 @@ abstract class Column {
     /**
      * The table object this column belongs to
      *
-     * @var SqlDiff\Database\TableInterface 
+     * @var SqlDiff\Database\TableInterface
      */
     private $table;
 
@@ -100,10 +100,7 @@ abstract class Column {
     private $key;
 
     /**
-     * Set the table object
-     *
-     * @param SqlDiff\Database\TableInterface $table
-     * @return SqlDiff\Database\Table\Column
+     * @see SqlDiff\Database\Table\ColumnInterface::setTable()
      */
     public function setTable(TableInterface $table) {
         $this->table = $table;
@@ -112,19 +109,14 @@ abstract class Column {
     }
 
     /**
-     * Get the table object
-     *
-     * @return SqlDiff\Database\TableInterface
+     * @see SqlDiff\Database\Table\ColumnInterface::getTable()
      */
     public function getTable() {
         return $this->table;
     }
 
     /**
-     * Set the type
-     *
-     * @param string $type
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setType()
      */
     public function setType($type) {
         $this->type = $type;
@@ -133,19 +125,14 @@ abstract class Column {
     }
 
     /**
-     * Get the type attribute
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getType()
      */
     public function getType() {
         return $this->type;
     }
 
     /**
-     * Set the attribute
-     *
-     * @param string $attribute
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setAttribute()
      */
     public function setAttribute($attribute) {
         $this->attribute = $attribute;
@@ -154,28 +141,21 @@ abstract class Column {
     }
 
     /**
-     * Get the attribute
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getAttribute()
      */
     public function getAttribute() {
         return $this->attribute;
     }
 
     /**
-     * Get the not null flag
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getNotNull()
      */
     public function getNotNull() {
         return $this->notNull;
     }
 
     /**
-     * Set the not null flag
-     *
-     * @param boolean $flag
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setNotNull()
      */
     public function setNotNull($flag) {
         $this->notNull = (bool) $flag;
@@ -184,19 +164,14 @@ abstract class Column {
     }
 
     /**
-     * Get the default value
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getDefault()
      */
     public function getDefault() {
         return $this->default;
     }
 
     /**
-     * Set the default value
-     *
-     * @param string $default
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setDefault()
      */
     public function setDefault($default) {
         $this->default = $default;
@@ -205,19 +180,14 @@ abstract class Column {
     }
 
     /**
-     * Get the auto increment flag
-     *
-     * @return boolean
+     * @see SqlDiff\Database\Table\ColumnInterface::getAutoIncrement()
      */
     public function getAutoIncrement() {
         return $this->autoIncrement;
     }
 
     /**
-     * Set the auto increment flag
-     *
-     * @param boolean $flag
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setAutoIncrement()
      */
     public function setAutoIncrement($flag) {
         $this->autoIncrement = (bool) $flag;
@@ -226,19 +196,14 @@ abstract class Column {
     }
 
     /**
-     * Get the column name
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getName()
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Set the column name
-     *
-     * @param string $name
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setName()
      */
     public function setName($name) {
         $this->name = $name;
@@ -247,19 +212,14 @@ abstract class Column {
     }
 
     /**
-     * Get the key
-     *
-     * @return string
+     * @see SqlDiff\Database\Table\ColumnInterface::getKey()
      */
     public function getKey() {
         return $this->key;
     }
 
     /**
-     * Set the key
-     *
-     * @param string $key
-     * @return SqlDiff\Database\Table\Column 
+     * @see SqlDiff\Database\Table\ColumnInterface::setKey()
      */
     public function setKey($key) {
         $this->key = $key;
@@ -268,18 +228,14 @@ abstract class Column {
     }
 
     /**
-     * Get the position of this column in the current table
-     *
-     * @return int
+     * @see SqlDiff\Database\Table\ColumnInterface::getPosition()
      */
     public function getPosition() {
         return $this->getTable()->getColumnPosition($this);
     }
 
     /**
-     * Get the previous column (if it exists)
-     *
-     * @return SqlDiff\Database\Table\ColumnInterface|null
+     * @see SqlDiff\Database\Table\ColumnInterface::getPreviousColumn()
      */
     public function getPreviousColumn() {
         $curPos = $this->getTable()->getColumnPosition($this);
@@ -293,9 +249,7 @@ abstract class Column {
     }
 
     /**
-     * Get the next column (if it exists)
-     *
-     * @return SqlDiff\Database\Table\ColumnInterface|null
+     * @see SqlDiff\Database\Table\ColumnInterface::getNextColumn()
      */
     public function getNextColumn() {
         $curPos  = $this->getTable()->getColumnPosition($this);
@@ -307,14 +261,5 @@ abstract class Column {
         }
 
         return null;
-    }
-
-    /**
-     * The magic to string method is a proxy to the implemention of getDefinition
-     *
-     * @return string
-     */
-    public function __toString() {
-        return $this->getDefinition();
     }
 }

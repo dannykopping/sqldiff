@@ -29,10 +29,10 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database\Table\Index;
+namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
-use SqlDiff\Database\Table\Index;
+use SqlDiff\Database\Table\Index as AbstractIndex;
 use SqlDiff\Database\Table\IndexInterface;
 
 /**
@@ -44,7 +44,7 @@ use SqlDiff\Database\Table\IndexInterface;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Mysql extends Index implements IndexInterface {
+class Index extends AbstractIndex implements IndexInterface {
     /**#@+
      * Different keys
      *
@@ -68,7 +68,7 @@ class Mysql extends Index implements IndexInterface {
      *
      * @param string $type
      * @throws SqlDiff\Exception
-     * @return SqlDiff\Database\Table\Index\Mysql
+     * @return SqlDiff\Mysql\Index
      */
     public function setType($type) {
         switch ($type) {

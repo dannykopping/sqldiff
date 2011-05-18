@@ -31,6 +31,8 @@
 
 namespace SqlDiff\Database;
 
+use SqlDiff\DatabaseInterface;
+use SqlDiff\Database\TableInterface;
 use SqlDiff\Database\Table\ColumnInterface;
 use SqlDiff\Database\Table\IndexInterface;
  
@@ -113,4 +115,178 @@ interface TableInterface {
      * @return array Returns an array of pre-formatted queries
      */
     function getExtraQueries(TableInterface $table);
+
+    /**
+     * Set the database object
+     *
+     * @param SqlDiff\DatabaseInterface $database
+     * @return SqlDiff\Database\TableInterface
+     */
+    function setDatabase(DatabaseInterface $database);
+
+    /**
+     * Get the database object
+     *
+     * @return SqlDiff\DatabaseInterface 
+     */
+    function getDatabase();
+
+    /**
+     * Get the number of columns
+     *
+     * @return int
+     */
+    function getNumColumns();
+
+    /**
+     * Get the number of indexes
+     *
+     * @return int
+     */
+    function getNumIndexes();
+
+    /**
+     * Get the name
+     *
+     * @return string
+     */
+    function getName();
+
+    /**
+     * Set the name
+     *
+     * @param string $name
+     * @return SqlDiff\Database\TableInterface
+     */
+    function setName($name);
+
+    /**
+     * Get the table comment
+     *
+     * @return string
+     */
+    function getComment();
+
+    /**
+     * Set a table comment
+     *
+     * @param string $comment
+     * @return SqlDiff\Database\TableInterface
+     */
+    function setComment($comment);
+
+    /**
+     * Add a column
+     *
+     * @param SqlDiff\Database\Table\ColumnInterface $column
+     * @return SqlDiff\Database\TableInterface
+     */
+    function addColumn(ColumnInterface $column);
+
+    /**
+     * Get a column based on a position
+     *
+     * @param int $position The position to fetch (0-based index)
+     * @return SqlDiff\Database\Table\ColumnInterface|null
+     */
+    function getColumnByPosition($position);
+
+    /**
+     * Get the position of the column (0-based index)
+     *
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
+     *                                                              column object
+     * @return int|null
+     */
+    function getColumnPosition($column);
+
+    /**
+     * Add an array of columns
+     *
+     * @param array $columns An array of SqlDiff\Database\Table\ColumnInterface objects
+     * @return SqlDiff\Database\TableInterface
+     */
+    function addColumns(array $columns);
+
+    /**
+     * Remove a column
+     *
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
+     *                                                              column object
+     * @return SqlDiff\Database\Table 
+     */
+    function removeColumn($column);
+
+    /**
+     * Fetch all columns
+     *
+     * @return array An array of SqlDiff\Database\Table\ColumnInterface objects
+     */
+    function getColumns();
+
+    /**
+     * Fetch a single column
+     *
+     * @param string $name
+     * @return null|SqlDiff\Database\Table\ColumnInterface 
+     */
+    function getColumn($name);
+
+    /**
+     * See if this table has a specific column
+     *
+     * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
+     *                                                              column object
+     * @return boolean
+     */
+    function hasColumn($column);
+
+    /**
+     * Add an index
+     *
+     * @param SqlDiff\Database\Table\IndexInterface $index
+     * @return SqlDiff\Database\TableInterface 
+     */
+    function addIndex(IndexInterface $index);
+
+    /**
+     * Add indexes
+     *
+     * @param array $indexes An array of SqlDiff_Database_Table_Index_Abstract objects
+     * @return SqlDiff\Database\TableInterface 
+     */
+    function addIndexes(array $indexes);
+
+    /**
+     * Remove an index
+     *
+     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
+     *                                                            index object
+     * @return SqlDiff\Database\TableInterface 
+     */
+    function removeIndex($index);
+
+    /**
+     * Get all indexes
+     *
+     * @return array Returns an array of SqlDiff\Database\Table\IndexInterface objects
+     */
+    function getIndexes();
+
+    /**
+     * Fetch a single index
+     *
+     * @param string $index
+     * @return null|SqlDiff\Database\Table\IndexInterface
+     */
+    function getIndex($index);
+
+    /**
+     * See if this table has a specific index
+     *
+     * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
+     *                                                            index object
+     * @return boolean
+     */
+    function hasIndex($index);
 }

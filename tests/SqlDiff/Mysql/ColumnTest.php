@@ -29,7 +29,7 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database\Table\Column;
+namespace SqlDiff\Mysql;
 
 /**
  * @package SqlDiff
@@ -38,11 +38,11 @@ namespace SqlDiff\Database\Table\Column;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class MysqlTest extends \PHPUnit_Framework_TestCase {
+class ColumnTest extends \PHPUnit_Framework_TestCase {
     /**
      * Column instance
      *
-     * @var SqlDiff\Database\Table\Column\Mysql
+     * @var SqlDiff\Mysql\Column
      */
     private $col;
 
@@ -50,7 +50,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase {
      * Set up method
      */
     public function setUp() {
-        $this->col = new Mysql();
+        $this->col = new Column();
     }
 
     /**
@@ -133,7 +133,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _testDefs(array $defs) {
         foreach ($defs as $def) {
-            $col = new Mysql();
+            $col = new Column();
             $col->setName($def['name'])
                 ->setType($def['type'])
                 ->setNotNull($def['notNull']);

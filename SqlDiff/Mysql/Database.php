@@ -23,31 +23,30 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database;
+namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
-use SqlDiff\Database;
+use SqlDiff\Database as AbstractDatabase;
 use SqlDiff\DatabaseInterface;
-use SqlDiff\Database\Table\Mysql as MysqlTable;
-use SqlDiff\Database\Table\Column\Mysql as MysqlColumn;
-use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
 
 /**
  * Class representing a MySQL database
  *
  * @package SqlDiff
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Mysql extends Database implements DatabaseInterface {
+class Database extends AbstractDatabase implements DatabaseInterface {
     /**
      * Populate the database related metadata
      *
@@ -77,10 +76,10 @@ class Mysql extends Database implements DatabaseInterface {
      * Create a table object
      *
      * @param \SimpleXMLElement $xml A node describing a single table
-     * @return SqlDiff\Database\Table\Mysql A new table object
+     * @return SqlDiff\Mysql\Table A new table object
      */
     public function createTable(\SimpleXMLElement $xml) {
-        $table = new MysqlTable();
+        $table = new Table();
 
         $table->setName((string) $xml['name'])
               ->setEngine((string) $xml->options['Engine'])
@@ -111,10 +110,10 @@ class Mysql extends Database implements DatabaseInterface {
      * Create a table field
      *
      * @param \SimpleXMLElement $xml A node describing a single field
-     * @return SqlDiff\Database\Table\Column\Mysql A new field object
+     * @return SqlDiff\MysqlColumn A new field object
      */
     public function createTableField(\SimpleXMLElement $xml) {
-        $field = new MysqlColumn();
+        $field = new Column();
 
         $field->setName((string) $xml['Field'])
               ->setType((string) $xml['Type'])
@@ -136,11 +135,11 @@ class Mysql extends Database implements DatabaseInterface {
      * instance already has an index with the same name as the one currently being created.
      *
      * @param \SimpleXMLElement $xml A node describing a single key
-     * @param SqlDiff\Database\Table\Mysql $table The table this key will be added to
-     * @return SqlDiff\Database\Table\Index\Mysql|boolean Returns a key instance or false if the
-     *                                                    key already exists
+     * @param SqlDiff\Mysql\Table $table The table this key will be added to
+     * @return SqlDiff\Mysql\Index|boolean Returns an Index instance or false if the key already 
+     *                                     exists
      */
-    public function createTableKey(\SimpleXMLElement $xml, MysqlTable $table) {
+    public function createTableKey(\SimpleXMLElement $xml, Table $table) {
         // Fetch the keys already attached to the table this key might be added to
         $keys    = $table->getIndexes();
         $keyName = (string) $xml['Key_name'];
@@ -155,17 +154,17 @@ class Mysql extends Database implements DatabaseInterface {
             return false;
         }
 
-        $key = new MysqlIndex();
+        $key = new Index();
         $key->setName($keyName)
             ->addField($field);
 
         // Set the correct key type
         if ($keyName === 'PRIMARY') {
-            $key->setType(MysqlIndex::PRIMARY_KEY);
+            $key->setType(Index::PRIMARY_KEY);
         } else if ((string) $xml['Non_unique'] === '0') {
-            $key->setType(MysqlIndex::UNIQUE);
+            $key->setType(Index::UNIQUE);
         } else {
-            $key->setType(MysqlIndex::KEY);
+            $key->setType(Index::KEY);
         }
 
         return $key;

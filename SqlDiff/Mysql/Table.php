@@ -29,17 +29,16 @@
  * @link https://github.com/christeredvartsen/sqldiff
  */
 
-namespace SqlDiff\Database\Table;
+namespace SqlDiff\Mysql;
 
-use SqlDiff\Database\Table;
+use SqlDiff\Database\Table as AbstractTable;
 use SqlDiff\Database\TableInterface;
-use SqlDiff\Database\Table\Mysql as MysqlTable;
-use SqlDiff\Database\Table\Index\Mysql as MysqlIndex;
-use SqlDiff\Database\Table\Column\Mysql as MysqlColumn;
+use SqlDiff\Database\Table\ColumnInterface;
+use SqlDiff\Database\Table\IndexInterface;
 use SqlDiff\TextUI\Formatter;
 
 /**
- * Class representing a MySQL index
+ * Class representing a MySQL table
  *
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -47,7 +46,7 @@ use SqlDiff\TextUI\Formatter;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Mysql extends Table implements TableInterface {
+class Table extends AbstractTable implements TableInterface {
     /**
      * Table engine
      *
@@ -109,7 +108,8 @@ class Mysql extends Table implements TableInterface {
     /**
      * Set the engine
      *
-     * @return SqlDiff\Database\Table\Mysql
+     * @param string $engine
+     * @return SqlDiff\Mysql\Table
      */
     public function setEngine($engine) {
         $this->engine = $engine;
@@ -130,7 +130,7 @@ class Mysql extends Table implements TableInterface {
      * Set the auto increment value
      *
      * @param int $autoIncrement
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setAutoIncrement($autoIncrement) {
         $this->autoIncrement = $autoIncrement;
@@ -151,7 +151,7 @@ class Mysql extends Table implements TableInterface {
      * Set default charset of table
      *
      * @param string $defaultCharset
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setDefaultCharset($defaultCharset) {
         $this->defaultCharset = $defaultCharset;
@@ -172,7 +172,7 @@ class Mysql extends Table implements TableInterface {
      * Set table collation
      *
      * @param string $collation
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setCollation($collation) {
         $this->collation = $collation;
@@ -193,7 +193,7 @@ class Mysql extends Table implements TableInterface {
      * Set the checksum option
      *
      * @param boolean $flag
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setChecksum($flag) {
         $this->checksum = (bool) $flag;
@@ -214,7 +214,7 @@ class Mysql extends Table implements TableInterface {
      * Set the delay key write option
      *
      * @param boolean $flag
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setDelayKeyWrite($flag) {
         $this->delayKeyWrite = (bool) $flag;
@@ -235,7 +235,7 @@ class Mysql extends Table implements TableInterface {
      * Set the fixed row format option
      *
      * @param boolean $flag
-     * @return SqlDiff\Database\Table\Mysql
+     * @return SqlDiff\Mysql\Table
      */
     public function setFixedRowFormat($flag) {
         $this->fixedRowFormat = (bool) $flag;
@@ -311,7 +311,7 @@ class Mysql extends Table implements TableInterface {
      * @see SqlDiff\Database\TableInterface::getAddColumnSql()
      */
     public function getAddColumnSql(ColumnInterface $column) {
-        $definition = (string) $column;
+        $definition = $column->getDefinition();
 
         // If the column has AUTO INCREMENT, we need to append PRIMARY KEY to the statement for it
         // to be a valid MySQL statement
@@ -321,7 +321,7 @@ class Mysql extends Table implements TableInterface {
 
             // Remove the PRIMARY KEY index from the table since it will be added in this statement
             foreach ($indexes as $index) {
-                if ($index->getType() === MysqlIndex::PRIMARY_KEY) {
+                if ($index->getType() === Index::PRIMARY_KEY) {
                     $column->getTable()->removeIndex($index);
                     break;
                 }
@@ -348,7 +348,7 @@ class Mysql extends Table implements TableInterface {
      * @see SqlDiff\Database\TableInterface::getChangeColumnSql()
      */
     public function getChangeColumnSql(ColumnInterface $column) {
-        return sprintf('ALTER TABLE `%s` CHANGE `%s` %s;', $this->getName(), $column->getName(), $column);
+        return sprintf('ALTER TABLE `%s` CHANGE `%s` %s;', $this->getName(), $column->getName(), $column->getDefinition());
     }
 
     /**
@@ -362,21 +362,21 @@ class Mysql extends Table implements TableInterface {
      * @see SqlDiff\Database\TableInterface::getAddIndexSql()
      */
     public function getAddIndexSql(IndexInterface $index) {
-        return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $index);
+        return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $index->getDefinition());
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getChangeIndexSql()
      */
     public function getChangeIndexSql(IndexInterface $index) {
-        return sprintf('ALTER TABLE `%s` DROP INDEX `%s`, ADD %s;', $this->getName(), $index->getName(), $index);
+        return sprintf('ALTER TABLE `%s` DROP INDEX `%s`, ADD %s;', $this->getName(), $index->getName(), $index->getDefinition());
     }
 
     /**
      * @see SqlDiff\Database\TableInterface::getDropIndexSql()
      */
     public function getDropIndexSql(IndexInterface $index) {
-        if ($index->getType() === MysqlIndex::PRIMARY_KEY) {
+        if ($index->getType() === Index::PRIMARY_KEY) {
             $name = 'PRIMARY KEY';
         } else {
             $name = 'INDEX `' . $index->getName() . '`';

@@ -43,7 +43,7 @@ use SqlDiff\Database\TableInterface;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/sqldiff
  */
-class Database {
+abstract class Database {
     /**#@+
      * Supported databases
      *
@@ -74,10 +74,7 @@ class Database {
     private $command;
 
     /**
-     * Set the name of the database
-     *
-     * @param string $name
-     * @return SqlDiff\Database
+     * @see SqlDiff\DatabaseInterface::setName()
      */
     public function setName($name) {
         $this->name = $name;
@@ -86,19 +83,14 @@ class Database {
     }
 
     /**
-     * Get the name of the database
-     *
-     * @return string
+     * @see SqlDiff\DatabaseInterface::getName()
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Set the current command
-     *
-     * @param SqlDiff\TextUI\Command $command
-     * @return SqlDiff\Database
+     * @see SqlDiff\DatabaseInterface::setCommand()
      */
     public function setCommand(Command $command) {
         $this->command = $command;
@@ -107,37 +99,28 @@ class Database {
     }
 
     /**
-     * Get the command
-     *
-     * @return SqlDiff\TextUI\Command
+     * @see SqlDiff\DatabaseInterface::getCommand()
      */
     public function getCommand() {
         return $this->command;
     }
 
     /**
-     * Get the number of tables in this database
-     *
-     * @return int
+     * @see SqlDiff\DatabaseInterface::getNumTables()
      */
     public function getNumTables() {
         return count($this->tables);
     }
 
     /**
-     * Get all tables
-     *
-     * @return array Returns an array of SqlDiff\Database\TableInterface objects
+     * @see SqlDiff\DatabaseInterface::getTables()
      */
     public function getTables() {
         return $this->tables;
     }
 
     /**
-     * Get a single table based on its name
-     *
-     * @param string $name
-     * @return null|SqlDiff\Database\TableInterface
+     * @see SqlDiff\DatabaseInterface::getTable()
      */
     public function getTable($name) {
         if (!isset($this->tables[$name])) {
@@ -148,10 +131,7 @@ class Database {
     }
 
     /**
-     * Add a table to the database
-     *
-     * @param SqlDiff\Database\TableInterface $table
-     * @return SqlDiff\Database
+     * @see SqlDiff\DatabaseInterface::addTable()
      */
     public function addTable(TableInterface $table) {
         $table->setDatabase($this);
@@ -161,12 +141,7 @@ class Database {
     }
 
     /**
-     * Remove a table from the database
-     *
-     * @param string|SqlDiff\Database\TableInterface $table Either the name of the table or a valid 
-     *                                                      table instance.
-     * @throws SqlDiff\Exception
-     * @return SqlDiff\Database
+     * @see SqlDiff\DatabaseInterface::removeTable()
      */
     public function removeTable($table) {
         if ($table instanceof TableInterface) {
@@ -180,11 +155,7 @@ class Database {
     }
 
     /**
-     * See if the database has a specific table
-     *
-     * @param string|SqlDiff\Database\TableInterface $table Either the name of the table or a valid 
-     *                                                      table instance.
-     * @return boolean
+     * @see SqlDiff\DatabaseInterface::hasTable()
      */
     public function hasTable($table) {
         if ($table instanceof TableInterface) {
@@ -207,7 +178,7 @@ class Database {
         $type = ucfirst(strtolower($type));
 
         // Generate class name
-        $className = 'SqlDiff\\Database\\' . $type;
+        $className = 'SqlDiff\\' . $type . '\\Database';
 
         // Return new object
         return new $className($type);
