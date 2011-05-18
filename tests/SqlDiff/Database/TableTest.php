@@ -31,6 +31,9 @@
 
 namespace SqlDiff\Database;
 
+use SqlDiff\Database\Table\ColumnInterface;
+use SqlDiff\Database\Table\IndexInterface;
+
 /**
  * @package SqlDiff
  * @author Christer Edvartsen <cogo@starzinger.net>
@@ -50,7 +53,7 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      * Set up method
      */
     public function setUp() {
-        $this->table = $this->getMockBuilder('SqlDiff\\Database\\Table')->getMockForAbstractClass();
+        $this->table = new TableStub();
     }
 
     /**
@@ -93,8 +96,8 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetNumColumns() {
         $this->assertSame(0, $this->table->getNumColumns());
-        $col = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getDefinition', 'getName'))->getMock();
-        $col->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
+        $col->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
         $this->table->addColumn($col);
         $this->assertSame(1, $this->table->getNumColumns());
     }
@@ -104,8 +107,8 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetNumIndexes() {
         $this->assertSame(0, $this->table->getNumIndexes());
-        $index = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('setTable', 'getDefinition', 'getName'))->getMock();
-        $index->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $index = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
+        $index->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
         $this->table->addIndex($index);
         $this->assertSame(1, $this->table->getNumIndexes());
     }
@@ -113,9 +116,9 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     public function testAddHasAndRemoveColumn() {
         $name = 'ColName';
 
-        $col = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getDefinition', 'getName'))->getMock();
+        $col = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col->expects($this->exactly(5))->method('getName')->will($this->returnValue($name));
-        $col->expects($this->exactly(2))->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col->expects($this->exactly(2))->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addColumn($col);
         $this->assertTrue($this->table->hasColumn($col));
@@ -131,7 +134,7 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     public function testAddAndGetColumn() {
         $name = 'ColName';
 
-        $col = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col->expects($this->once())->method('getName')->will($this->returnValue($name));
 
         $this->table->addColumn($col);
@@ -142,13 +145,13 @@ class TableTest extends \PHPUnit_Framework_TestCase {
         $name1 = 'ColName1';
         $name2 = 'ColName2';
 
-        $col1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col1->expects($this->once())->method('getName')->will($this->returnValue($name1));
-        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col2->expects($this->once())->method('getName')->will($this->returnValue($name2));
-        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addColumn($col1)
                     ->addColumn($col2);
@@ -162,13 +165,13 @@ class TableTest extends \PHPUnit_Framework_TestCase {
         $name1 = 'IndexName1';
         $name2 = 'IndexName2';
 
-        $idx1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'getDefinition', 'setTable'))->getMock();
+        $idx1 = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
         $idx1->expects($this->once())->method('getName')->will($this->returnValue($name1));
-        $idx1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $idx1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $idx2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'getDefinition', 'setTable'))->getMock();
+        $idx2 = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
         $idx2->expects($this->once())->method('getName')->will($this->returnValue($name2));
-        $idx2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $idx2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addIndex($idx1)
                     ->addIndex($idx2);
@@ -189,8 +192,8 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     public function testAddHasAndRemoveIndex() {
         $name = 'IndexName';
 
-        $idx = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'getDefinition', 'setTable'))->getMock();
-        $idx->expects($this->exactly(2))->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $idx = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
+        $idx->expects($this->exactly(2))->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
         $idx->expects($this->exactly(5))->method('getName')->will($this->returnValue($name));
 
         $this->table->addIndex($idx);
@@ -207,23 +210,23 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     public function testAddAndGetIndex() {
         $name = 'IndexName';
 
-        $idx = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $idx = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
         $idx->expects($this->once())->method('getName')->will($this->returnValue($name));
-        $idx->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $idx->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addIndex($idx);
         $this->assertSame($idx, $this->table->getIndex($name));
     }
 
     public function testAddColumns() {
-        $col1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col1->expects($this->once())->method('getName')->will($this->returnValue('1'));
-        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col2->expects($this->once())->method('getName')->will($this->returnValue('2'));
-        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
-        
+        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
+
         $cols = array(
             $col1,
             $col2,
@@ -234,13 +237,13 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testAddIndexes() {
-        $index1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $index1 = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
         $index1->expects($this->once())->method('getName')->will($this->returnValue('1'));
-        $index1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $index1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $index2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\IndexInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $index2 = $this->getMock('SqlDiff\\Database\\Table\\IndexInterface');
         $index2->expects($this->once())->method('getName')->will($this->returnValue('2'));
-        $index2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $index2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $indexes = array(
             $index1,
@@ -252,21 +255,21 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetColumnByPosition() {
-        $col1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col1->expects($this->once())->method('getName')->will($this->returnValue('1'));
-        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col2->expects($this->exactly(2))->method('getName')->will($this->returnValue('2'));
-        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col3 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col3 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col3->expects($this->once())->method('getName')->will($this->returnValue('3'));
-        $col3->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col3->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col4 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('getName', 'setTable', 'getDefinition'))->getMock();
+        $col4 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col4->expects($this->once())->method('getName')->will($this->returnValue('4'));
-        $col4->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col4->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addColumns(array($col1, $col2, $col3, $col4));
         $this->assertSame($col1, $this->table->getColumnByPosition(0));
@@ -280,21 +283,21 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetColumnPosition() {
-        $col1 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getName', 'getDefinition'))->getMock();
+        $col1 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col1->expects($this->exactly(3))->method('getName')->will($this->returnValue('1'));
-        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col1->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col2 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getName', 'getDefinition'))->getMock();
+        $col2 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col2->expects($this->exactly(3))->method('getName')->will($this->returnValue('2'));
-        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col2->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col3 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getName', 'getDefinition'))->getMock();
+        $col3 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col3->expects($this->exactly(3))->method('getName')->will($this->returnValue('3'));
-        $col3->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col3->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
-        $col4 = $this->getMockBuilder('SqlDiff\\Database\\Table\\ColumnInterface')->setMethods(array('setTable', 'getName', 'getDefinition'))->getMock();
+        $col4 = $this->getMock('SqlDiff\\Database\\Table\\ColumnInterface');
         $col4->expects($this->exactly(3))->method('getName')->will($this->returnValue('4'));
-        $col4->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\Table'));
+        $col4->expects($this->once())->method('setTable')->with($this->isInstanceOf('SqlDiff\\Database\\TableInterface'));
 
         $this->table->addColumns(array($col1, $col2, $col3, $col4));
         $this->assertSame(0, $this->table->getColumnPosition($col1));
@@ -315,4 +318,16 @@ class TableTest extends \PHPUnit_Framework_TestCase {
     public function testGetColumnPositionWithUnexistingColumn() {
         $this->assertNull($this->table->getColumnPosition('foobar'));
     }
+}
+
+class TableStub extends Table implements TableInterface {
+    function getCreateTableSql() {}
+    function getDropTableSql() {}
+    function getAddColumnSql(ColumnInterface $column) {}
+    function getChangeColumnSql(ColumnInterface $column) {}
+    function getDropColumnSql(ColumnInterface $column) {}
+    function getAddIndexSql(IndexInterface $index) {}
+    function getChangeIndexSql(IndexInterface $index) {}
+    function getDropIndexSql(IndexInterface $index) {}
+    function getExtraQueries(TableInterface $table) {}
 }
