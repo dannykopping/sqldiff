@@ -1,7 +1,7 @@
 Changelog for SqlDiff
 =====================
 
-SqlDiff-0.1.0
+SqlDiff-0.0.4
 -------------
 __n/a__
 
