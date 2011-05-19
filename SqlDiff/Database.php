@@ -31,8 +31,8 @@
 
 namespace SqlDiff;
 
-use SqlDiff\TextUI\Command; 
-use SqlDiff\Database\TableInterface; 
+use SqlDiff\TextUI\Command;
+use SqlDiff\Database\TableInterface;
 
 /**
  * Abstract database class that database implementations can extend

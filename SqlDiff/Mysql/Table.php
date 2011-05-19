@@ -23,6 +23,7 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -41,6 +42,7 @@ use SqlDiff\TextUI\Formatter;
  * Class representing a MySQL table
  *
  * @package SqlDiff
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License

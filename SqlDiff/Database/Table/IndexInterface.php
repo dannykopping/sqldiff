@@ -23,6 +23,7 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpackage Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -38,6 +39,7 @@ use SqlDiff\Database\Table\ColumnInterface;
  * Interface for table indexes
  *
  * @package SqlDiff
+ * @subpackage Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -50,11 +52,11 @@ interface IndexInterface {
      * @return string
      */
     function getDefinition();
-    
+
     /**
      * Get the table this index belongs to
      *
-     * @return SqlDiff\Database\TableInterface 
+     * @return SqlDiff\Database\TableInterface
      */
     function getTable();
 
@@ -62,7 +64,7 @@ interface IndexInterface {
      * Set the table this index belongs to
      *
      * @param SqlDiff\Database\TableInterface $table
-     * @return SqlDiff\Database\Table\Index 
+     * @return SqlDiff\Database\Table\Index
      */
     function setTable(TableInterface $table);
 
@@ -82,7 +84,7 @@ interface IndexInterface {
     function setName($name);
 
     /**
-     * Get the type of the index 
+     * Get the type of the index
      *
      * @return string
      */
@@ -99,7 +101,7 @@ interface IndexInterface {
     /**
      * Get the fields this index covers
      *
-     * @return array 
+     * @return array
      */
     function getFields();
 

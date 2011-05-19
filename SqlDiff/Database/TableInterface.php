@@ -23,6 +23,7 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
+ * @subpackage Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -35,11 +36,12 @@ use SqlDiff\DatabaseInterface;
 use SqlDiff\Database\TableInterface;
 use SqlDiff\Database\Table\ColumnInterface;
 use SqlDiff\Database\Table\IndexInterface;
- 
+
 /**
- * Database table interface 
+ * Database table interface
  *
  * @package SqlDiff
+ * @subpackage Interfaces
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -127,7 +129,7 @@ interface TableInterface {
     /**
      * Get the database object
      *
-     * @return SqlDiff\DatabaseInterface 
+     * @return SqlDiff\DatabaseInterface
      */
     function getDatabase();
 
@@ -213,7 +215,7 @@ interface TableInterface {
      *
      * @param string|SqlDiff\Database\Table\ColumnInterface $column Either a column name or a
      *                                                              column object
-     * @return SqlDiff\Database\Table 
+     * @return SqlDiff\Database\Table
      */
     function removeColumn($column);
 
@@ -228,7 +230,7 @@ interface TableInterface {
      * Fetch a single column
      *
      * @param string $name
-     * @return null|SqlDiff\Database\Table\ColumnInterface 
+     * @return null|SqlDiff\Database\Table\ColumnInterface
      */
     function getColumn($name);
 
@@ -245,7 +247,7 @@ interface TableInterface {
      * Add an index
      *
      * @param SqlDiff\Database\Table\IndexInterface $index
-     * @return SqlDiff\Database\TableInterface 
+     * @return SqlDiff\Database\TableInterface
      */
     function addIndex(IndexInterface $index);
 
@@ -253,7 +255,7 @@ interface TableInterface {
      * Add indexes
      *
      * @param array $indexes An array of SqlDiff_Database_Table_Index_Abstract objects
-     * @return SqlDiff\Database\TableInterface 
+     * @return SqlDiff\Database\TableInterface
      */
     function addIndexes(array $indexes);
 
@@ -262,7 +264,7 @@ interface TableInterface {
      *
      * @param string|SqlDiff\Database\Table\IndexInterface $index Either an index name or an
      *                                                            index object
-     * @return SqlDiff\Database\TableInterface 
+     * @return SqlDiff\Database\TableInterface
      */
     function removeIndex($index);
 
