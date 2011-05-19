@@ -25,7 +25,7 @@ First you will have to generate the schemas you want to diff:
     christer@aurora:~$ mysqldump -X -d -u <user> -p <source> > source.xml
     christer@aurora:~$ mysqldump -X -d -u <user> -p <target> > target.xml
     
-Then, to generate the statements needed to upgrade `&lt;target&gt;` to `&lt;source>&gt;`:    
+Then, to generate the statements needed to upgrade `<target>` to `<source>`:    
      
     christer@aurora:~$ sqldiff source.xml target.xml 
     SqlDiff-0.0.3 by Christer Edvartsen.
