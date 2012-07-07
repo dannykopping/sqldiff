@@ -50,9 +50,3 @@ spl_autoload_register(function($className) {
         }
     }
 });
-
-/** \Mockery\Loader */
-require_once 'Mockery/Loader.php';
-
-$loader = new \Mockery\Loader();
-$loader->register();
