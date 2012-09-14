@@ -23,7 +23,7 @@
  * IN THE SOFTWARE.
  *
  * @package SqlDiff
- * @subpacakge Mysql
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
@@ -40,7 +40,7 @@ use SqlDiff\Database\Table\IndexInterface;
  * Class representing a MySQL index
  *
  * @package SqlDiff
- * @subpacakge Mysql
+ * @subpackage Mysql
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
