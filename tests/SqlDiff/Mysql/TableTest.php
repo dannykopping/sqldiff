@@ -195,7 +195,7 @@ class TableTest extends \PHPUnit_Framework_TestCase {
 PRIMARY KEY `id`,
 KEY `name` (`name`),
 UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=UTF-8 COLLATE=utf8_danish_ci COMMENT='Table comment' CHEKCSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=FIXED;";
+) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=UTF-8 COLLATE=utf8_danish_ci COMMENT='Table comment' CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=FIXED;";
 
         $this->assertSame($expectedSql, $sql);
     }

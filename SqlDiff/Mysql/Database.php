@@ -33,6 +33,8 @@
 namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
+use SqlDiff\Util\ForeignKeyUtil;
+use PDO;
 use SqlDiff\Database as AbstractDatabase;
 use SqlDiff\DatabaseInterface;
 
@@ -136,8 +138,7 @@ class Database extends AbstractDatabase implements DatabaseInterface {
      *
      * @param \SimpleXMLElement $xml A node describing a single key
      * @param SqlDiff\Mysql\Table $table The table this key will be added to
-     * @return SqlDiff\Mysql\Index|boolean Returns an Index instance or false if the key already 
-     *                                     exists
+     * @return SqlDiff\Mysql\Index|boolean Returns an Index instance or false if the key already exists
      */
     public function createTableKey(\SimpleXMLElement $xml, Table $table) {
         // Fetch the keys already attached to the table this key might be added to
@@ -152,15 +153,17 @@ class Database extends AbstractDatabase implements DatabaseInterface {
             $keys[$keyName]->addField($field);
 
             return false;
-        }
+		}
 
-        $key = new Index();
+		$key = new Index();
         $key->setName($keyName)
             ->addField($field);
 
         // Set the correct key type
         if ($keyName === 'PRIMARY') {
             $key->setType(Index::PRIMARY_KEY);
+		} else if (ForeignKeyUtil::isForeignKey($table, $keyName)) {
+			$key->setType(Index::FOREIGN_KEY);
         } else if ((string) $xml['Non_unique'] === '0') {
             $key->setType(Index::UNIQUE);
         } else {

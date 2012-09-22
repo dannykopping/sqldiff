@@ -33,6 +33,7 @@
 namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
+use SqlDiff\Util\ForeignKeyUtil;
 use SqlDiff\Database\Table\Index as AbstractIndex;
 use SqlDiff\Database\Table\IndexInterface;
 
@@ -56,6 +57,7 @@ class Index extends AbstractIndex implements IndexInterface {
     const PRIMARY_KEY = 'PRIMARY KEY';
     const UNIQUE      = 'UNIQUE KEY';
     const KEY         = 'KEY';
+    const FOREIGN_KEY = 'FOREIGN KEY';
     /**#@-*/
 
     /**
@@ -64,6 +66,13 @@ class Index extends AbstractIndex implements IndexInterface {
      * @var string
      */
     const PRIMARY_KEY_NAME = 'PK';
+
+    /**
+     * The name used for primary keys
+     *
+     * @var string
+     */
+    const FOREIGN_KEY_NAME = 'FK';
 
     /**
      * Set the type
@@ -78,6 +87,7 @@ class Index extends AbstractIndex implements IndexInterface {
             case self::FULLTEXT:
             case self::UNIQUE:
             case self::KEY:
+            case self::FOREIGN_KEY:
                 break;
             default:
                 throw new Exception('Unknown index type: ' . $type);
@@ -100,6 +110,10 @@ class Index extends AbstractIndex implements IndexInterface {
             return self::PRIMARY_KEY_NAME;
         }
 
+        if (empty($name) && $this->getType() === self::FOREIGN_KEY) {
+            return self::FOREIGN_KEY;
+        }
+
         return $name;
     }
 
@@ -109,9 +123,13 @@ class Index extends AbstractIndex implements IndexInterface {
     public function getDefinition() {
         $ret = $this->getType();
 
-        if ($ret !== self::PRIMARY_KEY && $this->getName()) {
+        if (($ret !== self::PRIMARY_KEY && $ret !== self::FOREIGN_KEY) && $this->getName()) {
             $ret .= ' `' . $this->getName() . '`';
         }
+
+		if($ret == self::FOREIGN_KEY && $this->getName()) {
+			return ForeignKeyUtil::getFKCreateStatement($this->getTable(), $this->getName());
+		}
 
         $fieldNames = array();
 

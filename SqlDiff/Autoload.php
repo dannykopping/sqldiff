@@ -63,6 +63,7 @@ class Autoload {
         'sqldiff\\mysql\\table' => '/Mysql/Table.php',
         'sqldiff\\textui\\command' => '/TextUI/Command.php',
         'sqldiff\\textui\\formatter' => '/TextUI/Formatter.php',
+        'sqldiff\\util\\foreignkeyutil' => '/Util/ForeignKeyUtil.php',
         'sqldiff\\version' => '/Version.php'
     );
 
