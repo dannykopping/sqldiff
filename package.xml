@@ -51,7 +51,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file baseinstalldir="/" name="Formatter.php" role="php" />
     </dir>
     <dir name="Util">
-     <file baseinstalldir="/" name="ForeignKeyUtil.php" role="php" />
+     <file baseinstalldir="/" name="DatabaseUtil.php" role="php" />
     </dir>
     <file baseinstalldir="/" name="Autoload.php" role="php" />
     <file baseinstalldir="/" name="Database.php" role="php" />

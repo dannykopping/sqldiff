@@ -11,8 +11,21 @@
 	 *
 	 * @see http://bugs.mysql.com/bug.php?id=66821
 	 */
-	class ForeignKeyUtil
+	class DatabaseUtil
 	{
+		private static $dbName;
+		private static $host;
+		private static $username;
+		private static $password;
+
+		public static function setup($dbName, $host="127.0.0.1", $username="root", $password="")
+		{
+			self::$dbName = $dbName;
+			self::$host = $host;
+			self::$username = $username;
+			self::$password = $password;
+		}
+
 		/**
 		 * Initialize the database connection
 		 *
@@ -22,7 +35,7 @@
 		{
 			try
 			{
-				$connection = new PDO("mysql:dbname=pt-sync-test;host=127.0.0.1", 'root', 'mac150189');
+				$connection = new PDO("mysql:dbname=".self::$dbName.";host=".self::$host, self::$username, self::$password);
 			}
 			catch(PDOException $e)
 			{
@@ -51,7 +64,7 @@
 			$query      = $connection->prepare($statement, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$query->setFetchMode(PDO::FETCH_ASSOC);
 
-			$query->execute(array(":schema" => "pt-sync-test", ":table" => $table->getName(), ":key" => $keyName));
+			$query->execute(array(":schema" => self::$dbName, ":table" => $table->getName(), ":key" => $keyName));
 			$result = $query->fetch();
 
 			return (int) $result["count"] == 1;
@@ -78,7 +91,7 @@
 			$query      = $connection->prepare($statement, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$query->setFetchMode(PDO::FETCH_ASSOC);
 
-			$query->execute(array(":schema" => "pt-sync-test", ":table" => $table->getName(), ":key" => $keyName));
+			$query->execute(array(":schema" => self::$dbName, ":table" => $table->getName(), ":key" => $keyName));
 			$result = $query->fetch();
 
 			if(!empty($result["REFERENCED_TABLE_NAME"]))
@@ -110,12 +123,6 @@
 				return $create;
 			}
 
-//		CONSTRAINT `fk_BillingHistory_FinancialTransaction1`
-//		    FOREIGN KEY (`financialTransactionId` )
-//		    REFERENCES `pt-sync-test`.`FinancialTransaction` (`id` )
-//		    ON DELETE CASCADE
-//		    ON UPDATE CASCADE
-
 			return false;
 		}
 
@@ -142,13 +149,6 @@
 
 				return $alter;
 			}
-
-//			ALTER TABLE `pt-sync-test`.`Filter`
-//			  ADD CONSTRAINT `fk_Filter_User1`
-//			  FOREIGN KEY (`userId` )
-//			  REFERENCES `pt-sync-test`.`User` (`id` )
-//			  ON DELETE NO ACTION
-//			  ON UPDATE RESTRICT;
 
 			return false;
 		}

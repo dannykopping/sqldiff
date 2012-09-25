@@ -33,7 +33,7 @@
 namespace SqlDiff\Mysql;
 
 use SqlDiff\Database\Table as AbstractTable;
-use SqlDiff\Util\ForeignKeyUtil;
+use SqlDiff\Util\DatabaseUtil;
 use SqlDiff\Database\TableInterface;
 use SqlDiff\Database\Table\ColumnInterface;
 use SqlDiff\Database\Table\IndexInterface;
@@ -366,7 +366,7 @@ class Table extends AbstractTable implements TableInterface {
      */
     public function getAddIndexSql(IndexInterface $index) {
 		if($index->getType() == Index::FOREIGN_KEY)
-			return ForeignKeyUtil::getFKAlterStatement($index->getTable(), $index->getName());
+			return DatabaseUtil::getFKAlterStatement($index->getTable(), $index->getName());
 
         return sprintf('ALTER TABLE `%s` ADD %s;', $this->getName(), $index->getDefinition());
     }

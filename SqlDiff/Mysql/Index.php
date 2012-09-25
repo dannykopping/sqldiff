@@ -33,7 +33,7 @@
 namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
-use SqlDiff\Util\ForeignKeyUtil;
+use SqlDiff\Util\DatabaseUtil;
 use SqlDiff\Database\Table\Index as AbstractIndex;
 use SqlDiff\Database\Table\IndexInterface;
 
@@ -128,7 +128,7 @@ class Index extends AbstractIndex implements IndexInterface {
         }
 
 		if($ret == self::FOREIGN_KEY && $this->getName()) {
-			return ForeignKeyUtil::getFKCreateStatement($this->getTable(), $this->getName());
+			return DatabaseUtil::getFKCreateStatement($this->getTable(), $this->getName());
 		}
 
         $fieldNames = array();

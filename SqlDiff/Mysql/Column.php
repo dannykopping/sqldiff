@@ -106,7 +106,7 @@ class Column extends AbstractColumn implements ColumnInterface {
      * @see SqlDiff\Database\Table\ColumnInterface::getDefinition()
      */
     public function getDefinition() {
-        $sql = '`' . $this->getName() . '` ' . $this->getType() . '';
+        $sql = '`' . $this->getName() . '` ' . strtoupper($this->getType()) . '';
 
         if ($this->getAttribute()) {
             $sql .= ' ' . $this->getAttribute();
@@ -123,12 +123,19 @@ class Column extends AbstractColumn implements ColumnInterface {
         if ($this->getNotNull()) {
             $sql .= ' NOT NULL';
         }
+		else {
+			$sql .= ' NULL';
+		}
 
         $default = $this->getDefault();
 
         if ($default !== null) {
             $sql .= ' DEFAULT \'' . $default . '\'';
         }
+		else {
+			if(!$this->getNotNull())
+				$sql .= ' DEFAULT NULL';
+		}
 
         if ($this->getAutoIncrement()) {
             $sql .= ' AUTO_INCREMENT';

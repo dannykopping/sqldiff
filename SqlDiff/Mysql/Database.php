@@ -33,7 +33,7 @@
 namespace SqlDiff\Mysql;
 
 use SqlDiff\Exception;
-use SqlDiff\Util\ForeignKeyUtil;
+use SqlDiff\Util\DatabaseUtil;
 use PDO;
 use SqlDiff\Database as AbstractDatabase;
 use SqlDiff\DatabaseInterface;
@@ -162,7 +162,7 @@ class Database extends AbstractDatabase implements DatabaseInterface {
         // Set the correct key type
         if ($keyName === 'PRIMARY') {
             $key->setType(Index::PRIMARY_KEY);
-		} else if (ForeignKeyUtil::isForeignKey($table, $keyName)) {
+		} else if (DatabaseUtil::isForeignKey($table, $keyName)) {
 			$key->setType(Index::FOREIGN_KEY);
         } else if ((string) $xml['Non_unique'] === '0') {
             $key->setType(Index::UNIQUE);
