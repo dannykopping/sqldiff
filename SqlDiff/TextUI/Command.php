@@ -32,6 +32,7 @@
 namespace SqlDiff\TextUI;
 
 use SqlDiff\Database;
+use SqlDiff\Util\DatabaseUtil;
 use SqlDiff\DatabaseInterface;
 use SqlDiff\Exception;
 use SqlDiff\Version;
@@ -135,6 +136,8 @@ class Command {
         $self = new static();
         $self->validateArguments($argv);
 
+		DatabaseUtil::setup($self->options["schema"], $self->options["host"], $self->options["user"], $self->options["pass"]);
+
         exit($self->run());
     }
 
@@ -160,6 +163,12 @@ class Command {
                 switch ($arg) {
                     case 'mirror':
                         $this->options['mirror'] = true;
+                        break;
+                    case 'user':
+                    case 'pass':
+                    case 'host':
+                    case 'schema':
+                        $this->options[$arg] = $argv[++$i];
                         break;
                     case 'colors':
                         $this->options['colors'] = true;
@@ -385,6 +394,14 @@ Options:
   --mirror               Add SQL to drop tables, columns and indexes in the
                          <target> database that is not present in the <source>
                          database
+
+  --user				 The source database user
+
+  --pass				 The source database pass
+
+  --host				 The source database host
+
+  --schema				 The source database schema
 
   --colors               Use colors in output to differentiate the  generated
                          statements

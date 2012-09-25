@@ -33,5 +33,4 @@
 	/** @see SqlDiff\Autoload */
 	require 'SqlDiff/Autoload.php';
 
-	SqlDiff\Util\DatabaseUtil::setup("deploi-test", "127.0.0.1", "deploi", "deploi");
 	SqlDiff\TextUI\Command::main();
