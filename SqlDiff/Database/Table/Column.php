@@ -93,6 +93,13 @@ abstract class Column {
     private $autoIncrement;
 
     /**
+     * Table comment
+     *
+     * @var string
+     */
+    private $comment;
+
+    /**
      * The column key
      *
      * @var string
@@ -121,6 +128,7 @@ abstract class Column {
     public function setType($type) {
         $this->type = $type;
 
+		echo $type.":".$this->getName()."\n";
         return $this;
     }
 
@@ -191,6 +199,22 @@ abstract class Column {
      */
     public function setAutoIncrement($flag) {
         $this->autoIncrement = (bool) $flag;
+
+        return $this;
+    }
+
+    /**
+     * @see SqlDiff\Database\Table\ColumnInterface::getComment()
+     */
+    public function getComment() {
+        return $this->comment;
+    }
+
+    /**
+     * @see SqlDiff\Database\Table\ColumnInterface::setComment()
+     */
+    public function setComment($comment) {
+        $this->comment = $comment;
 
         return $this;
     }

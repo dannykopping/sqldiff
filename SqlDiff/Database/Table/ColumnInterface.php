@@ -143,6 +143,21 @@ interface ColumnInterface {
     function setAutoIncrement($flag);
 
     /**
+     * Get the table comment
+     *
+     * @return string
+     */
+    function getComment();
+
+    /**
+     * Set the table comment
+     *
+     * @param string $comment
+     * @return SqlDiff\Database\Table\ColumnInterface
+     */
+    function setComment($comment);
+
+    /**
      * Get the column name
      *
      * @return string

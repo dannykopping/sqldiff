@@ -250,7 +250,7 @@ class Table extends AbstractTable implements TableInterface {
      * @see SqlDiff\Database\TableInterface::getDropTableSql()
      */
     public function getDropTableSql() {
-        return sprintf('DROP TABLE `%s`', $this->getName());
+        return sprintf('DROP TABLE `%s`;', $this->getName());
     }
 
     /**

@@ -141,6 +141,11 @@ class Column extends AbstractColumn implements ColumnInterface {
             $sql .= ' AUTO_INCREMENT';
         }
 
+		$comment = trim($this->getComment());
+        if (!empty($comment)) {
+            $sql .= ' COMMENT=\''.$this->getComment().'\'';
+        }
+
         return $sql;
     }
 }
